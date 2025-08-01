@@ -42,6 +42,7 @@ import com.example.tpv.data.model.ItemPedido
 import com.example.tpv.data.model.Producto
 import com.example.tpv.data.model.Propiedades
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import java.time.LocalDate
 
 class ParrillaFragment : Fragment() {
     private val pedidoViewModel: PedidoViewModel by activityViewModels()
@@ -85,6 +86,10 @@ class ParrillaFragment : Fragment() {
         nombreLocal = sharedPref.getString("local_nombre", null).toString()
         terminal = sharedPref.getString("terminal", null).toString()
         camarero = sharedPref.getString("camarero", null).toString()
+
+        val dbId     = sharedPref.getString("dbId", "cloud")!!
+        val colorNet = sharedPref.getString("local_nombre", "")!!
+        pedidoViewModel.cargarPedidosPendientesDesdeBD(dbId, colorNet)
 
 
         layoutCategorias = view.findViewById(R.id.layoutCategorias)
@@ -194,8 +199,8 @@ class ParrillaFragment : Fragment() {
 
                     pedidoViewModel.cargarPedidosPendientesDesdeBD(dbId, colorNet)
 
-                    // Refrescar cada 60 segundos
-                    handler.postDelayed(this, 60_000)
+                    // Refrescar cada 120 segundos
+                    handler.postDelayed(this, 120_000)
                 }
             }
         })
@@ -348,35 +353,32 @@ class ParrillaFragment : Fragment() {
 
     @SuppressLint("SetTextI18n")
     private fun actualizarUIProductos() {
+        // 1) Limpio la vista
         layoutTicketItems.removeAllViews()
-        val items = pedidoViewModel.obtenerItems(mesaActual, salaActual)
-        val idPedido = pedidoViewModel.obtenerIdPedidoMesaSeleccionada() ?: ""
-        var total = 0.0
 
-        for (item in items) {
-            // --- 1) Fila principal (clickable para borrar/reducir) ---
-            val subtotal = item.precio * item.cantidad
-            total += subtotal
-            val prodOrig = productoOriginalMap[item.plu]
-                ?: throw IllegalStateException("No hay Producto para plu=${item.plu}")
+        // 2) Cojo items + pedidoId
+        val items    = pedidoViewModel.obtenerItems(mesaActual, salaActual)
+        val idPedido = pedidoViewModel.obtenerIdPedidoMesaSeleccionada() ?: return
+        val dbId     = sharedPref.getString("dbId","cloud")!!
+        var total    = 0.0
 
-            val itemLayout = LinearLayout(context).apply {
+        // 3) Pinto cada ItemPedido en orden
+        items.forEach { item ->
+            // --- fila principal ---
+            val row = LinearLayout(requireContext()).apply {
                 orientation = LinearLayout.HORIZONTAL
-                layoutParams = LinearLayout.LayoutParams(
-                    MATCH_PARENT, WRAP_CONTENT
-                ).apply { setMargins(0, 4, 0, 4) }
-                setPadding(8, 8, 8, 8)
-                isClickable = true
-                isFocusable = true
-                tag = item
+                layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
+                    .apply { setMargins(0,4,0,4) }
+                setPadding(8,8,8,8)
                 setBackgroundResource(android.R.drawable.list_selector_background)
-                // Sólo selección/propiedades en click
+
+                // click breve: selecciona y muestra botón Propiedades
                 setOnClickListener {
                     ultimoItemSeleccionado = item
-                    btnPropiedades.visibility =
-                        if (prodOrig.tieneConfiguracion()) View.VISIBLE
-                        else View.INVISIBLE
+                    btnPropiedades.visibility = if (item.propiedades.isNotEmpty()) View.VISIBLE else View.GONE
                 }
+
+                // long click: borrar N unidades
                 setOnLongClickListener {
                     val picker = NumberPicker(requireContext()).apply {
                         minValue = 1
@@ -388,88 +390,97 @@ class ParrillaFragment : Fragment() {
                         .setView(picker)
                         .setPositiveButton("Borrar") { _, _ ->
                             val toRemove = picker.value
+                            // 1) update ViewModel
                             pedidoViewModel.reducirItem(item, toRemove)
-                            RetrofitClient.apiService.borrarPedido(
-                                sharedPref.getString("dbId","cloud")!!,
-                                idPedido,
-                                item.plu.toString()
-                            ).enqueue(object: Callback<Void> {
-                                override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                                    if (response.isSuccessful) {
-                                        Log.i("API", "✅ Unidad borrada de pedido $idPedido (plu=${item.plu})")
-                                    } else {
-                                        Log.e("API", "❌ Error borrando unidad del pedido $idPedido (plu=${item.plu}) HTTP ${response.code()}")
-                                    }
-                                }
-                                override fun onFailure(call: Call<Void>, t: Throwable) {
-                                    Log.e("API", "Fallo al borrar unidad del pedido $idPedido (plu=${item.plu})", t)
-                                }
-                            })
-                            actualizarUIProductos()
+                            // 2) sync con API (síncrono para mantener orden)
+                            val nuevaCant = (item.cantidad - toRemove).coerceAtLeast(0)
+                            val lineaAct  = Pedido(
+                                reg = idPedido,
+                                Hora = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")),
+                                NombreCam = sharedPref.getString("empleado_nombre","")!!,
+                                NombreFormaPago = salaActual,
+                                Fecha = LocalDate.now().format(DateTimeFormatter.ISO_DATE),
+                                FechaReg = LocalDate.now().format(DateTimeFormatter.ISO_DATE),
+                                Barra = 1,
+                                Terminal = 1,
+                                Plu = item.plu,
+                                PluAdbc = 0,
+                                Producto = item.nombreBase,
+                                Cantidad = nuevaCant.toString(),
+                                Pts = item.precio.toString(),
+                                ImpresoCli = 0,
+                                Tarifa = item.precio.toString(),
+                                CBarras = terminal,
+                                PagoPendiente = mesaActual,
+                                Comensales = "1",
+                                Consumo = item.consumoSolo,
+                                IDCLIENTE = "0A_VENTA",
+                                Impreso = item.impresora,
+                                NombTerminal = nombreLocal,
+                                IvaVenta = item.ivaVenta,
+                                Iva = item.ivaVenta,
+                                TotalReg = (item.precio * nuevaCant).toString(),
+                                incluirConfirmacion = false,
+                                Familia = item.familia
+                            )
+                            // **Llamada síncrona para asegurar orden**
+                            Thread {
+                                try {
+                                    RetrofitClient.apiService
+                                        .sincronizarPedido(dbId,idPedido,lineaAct)
+                                        .execute()
+                                } catch(e: Exception) { /* log error */ }
+                                requireActivity().runOnUiThread { actualizarUIProductos() }
+                            }.start()
                         }
-                        .setNegativeButton("No", null)
+                        .setNegativeButton("Cancelar",null)
                         .show()
-                    true  // consume el evento
+                    true
                 }
             }
 
             // Cantidad
-            val cantidadView = TextView(context).apply {
-                text = "${item.cantidad} x"
-                setTextColor(Color.BLACK); textSize = 16f
-                layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
-                    .apply { marginEnd = 8 }
-            }
-            // Nombre
-            val nombreView = TextView(context).apply {
-                text = item.nombre
-                setTextColor(Color.BLACK); textSize = 16f
-                layoutParams = LinearLayout.LayoutParams(0, WRAP_CONTENT, 1f)
-            }
-            // Precio unitario
-            val precioView = TextView(context).apply {
-                text = "%.2f €".format(item.precio)
-                setTextColor(Color.DKGRAY); textSize = 16f
-                layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
-            }
+            row.addView(TextView(requireContext()).apply {
+                text = "${item.cantidad} x"; textSize=16f; setTextColor(Color.BLACK)
+                layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT,WRAP_CONTENT).apply{ marginEnd=8 }
+            })
+            // Nombre base + props inline (por claridad)
+            row.addView(TextView(requireContext()).apply {
+                text = item.nombreBase; textSize=16f; setTextColor(Color.BLACK)
+                layoutParams = LinearLayout.LayoutParams(0,WRAP_CONTENT,1f)
+            })
+            // Precio
+            row.addView(TextView(requireContext()).apply {
+                text = "%.2f €".format(item.precio); textSize=16f; setTextColor(Color.DKGRAY)
+                layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT,WRAP_CONTENT)
+            })
+            layoutTicketItems.addView(row)
 
-            itemLayout.addView(cantidadView)
-            itemLayout.addView(nombreView)
-            itemLayout.addView(precioView)
-            layoutTicketItems.addView(itemLayout)
-
-            // --- 2) Líneas de propiedades (no clickable) ---
+            // --- subfilas de propiedades ---
             item.propiedades.forEach { prop ->
-                val propLayout = LinearLayout(context).apply {
+                layoutTicketItems.addView(LinearLayout(requireContext()).apply {
                     orientation = LinearLayout.HORIZONTAL
-                    layoutParams = LinearLayout.LayoutParams(
-                        MATCH_PARENT, WRAP_CONTENT
-                    ).apply { setMargins(48, 2, 0, 2) }
-                    setPadding(8, 4, 8, 4)
-                }
-                val bullet = TextView(context).apply {
-                    text = "•"
-                    setTextColor(Color.GRAY); textSize = 14f
-                    layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
-                        .apply { marginEnd = 8 }
-                }
-                val propView = TextView(context).apply {
-                    text = prop
-                    setTextColor(Color.GRAY); textSize = 14f
-                    layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
-                }
-                propLayout.addView(bullet)
-                propLayout.addView(propView)
-                layoutTicketItems.addView(propLayout)
+                    layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
+                        .apply { setMargins(48,2,0,2) }
+                    setPadding(8,4,8,4)
+                    addView(TextView(context).apply {
+                        text="•"; textSize=14f; setTextColor(Color.GRAY)
+                        layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT,WRAP_CONTENT)
+                            .apply{ marginEnd=8 }
+                    })
+                    addView(TextView(context).apply {
+                        text=prop; textSize=14f; setTextColor(Color.GRAY)
+                    })
+                })
             }
+
+            total += item.precio * item.cantidad
         }
 
-        // Total
-        view?.findViewById<TextView>(R.id.textTotal)?.apply {
-            text = "Total: %.2f €".format(total)
-        }
+        // 4) Total
+        view?.findViewById<TextView>(R.id.textTotal)
+            ?.text = "Total: %.2f €".format(total)
     }
-
 
     private fun enviarPedidoPendiente(incluirConfirmacion: Boolean) {
         val items = pedidoViewModel.obtenerItems(mesaActual, salaActual)

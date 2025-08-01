@@ -1,6 +1,5 @@
 package com.example.tpv.viewModels
 
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,27 +7,17 @@ import com.example.tpv.data.api.RetrofitClient
 import com.example.tpv.data.model.ItemPedido
 import com.example.tpv.data.model.Pedido
 import es.redsys.paysys.Utils.Log
-import org.json.JSONException
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Callback
 import java.util.UUID
 
 class PedidoViewModel : ViewModel() {
-
     private val _mesaSeleccionada = MutableLiveData<String>("sin mesa")
     val mesaSeleccionada: LiveData<String> = _mesaSeleccionada
-
     private val _salaSeleccionada = MutableLiveData<String?>()
     val salaSeleccionada: LiveData<String?> get() = _salaSeleccionada
-
-    // Mapa sala+mesa -> id del pedido
     private val _idPedidoPorMesa = MutableLiveData<MutableMap<String, String>>(mutableMapOf())
-    val idPedidoPorMesa: LiveData<MutableMap<String, String>> = _idPedidoPorMesa
-
-    // Mapa sala+mesa -> lista de productos
-
     private val _itemsPorMesa = MutableLiveData<MutableMap<String, MutableList<ItemPedido>>>(mutableMapOf())
     val itemsPorMesa: LiveData<MutableMap<String, MutableList<ItemPedido>>> = _itemsPorMesa
 
@@ -132,52 +121,55 @@ class PedidoViewModel : ViewModel() {
     }
 
     fun cargarPedidosPendientesDesdeBD(dbId: String, colorNet: String) {
+        Log.i("PedidoVM", "▶ cargarPedidosPendientesDesdeBD(dbId=$dbId, colorNet=$colorNet) llamada")
         RetrofitClient.apiService.getPedidosPendientes(dbId, colorNet)
             .enqueue(object : Callback<List<Pedido>> {
-                override fun onResponse(
-                    call: Call<List<Pedido>>,
-                    response: Response<List<Pedido>>
-                ) {
-                    if (!response.isSuccessful) {
-                        Log.e("PedidoVM", "❌ Error HTTP: ${response.code()}")
-                        return
-                    }
-
+                override fun onResponse(call: Call<List<Pedido>>, response: Response<List<Pedido>>) {
+                    if (!response.isSuccessful) return
                     val pedidos = response.body() ?: return
 
-                    val mapa = mutableMapOf<String, MutableList<ItemPedido>>()
-                    val idsMap = mutableMapOf<String, String>()
+                    // LinkedHashMap para mantener orden de inserción
+                    val mapa = linkedMapOf<String, MutableList<ItemPedido>>()
+                    val ids  = mutableMapOf<String, String>()
 
-                    for (linea in pedidos) {
+                    pedidos.forEach { linea ->
+                        Log.d("PedidoVM", "LINEA → Plu=${linea.Plu}  PluAdbc=${linea.PluAdbc}  Producto='${linea.Producto}'")
                         val clave = "${linea.NombreFormaPago}-${linea.PagoPendiente}"
+                        ids[clave] = linea.reg
                         val lista = mapa.getOrPut(clave) { mutableListOf() }
 
-                        val precio = linea.Tarifa.replace(",",".").toDoubleOrNull() ?: 0.0
-                        val item = ItemPedido(
-                            nombreBase =  linea.Producto,
-                            nombre      = linea.Producto,
-                            precio      = precio,
-                            cantidad    = 1,
-                            plu         = linea.Plu,
-                            familia     = linea.Familia,
-                            consumoSolo = linea.Consumo,
-                            impresora   = linea.Impreso,
-                            ivaVenta    = linea.IvaVenta,
-                            pluadbc = linea.PluAdbc
-                        )
-                        lista.add(item)
-
-                        idsMap[clave] = linea.reg
+                        if (linea.PluAdbc == 90909090) {
+                            // Es propiedad: la agrego a la última línea base
+                            if (lista.isNotEmpty()) {
+                                lista.last().propiedades.add(linea.Producto)
+                            }
+                        } else {
+                            // Producto base → creo nuevo ItemPedido
+                            val precio  = linea.Tarifa.replace(",",".").toDoubleOrNull() ?: 0.0
+                            lista.add(
+                                ItemPedido(
+                                    nombre      = linea.Producto,
+                                    nombreBase  = linea.Producto,
+                                    precio      = precio,
+                                    cantidad    = 1,
+                                    plu         = linea.Plu,
+                                    familia     = linea.Familia,
+                                    consumoSolo = linea.Consumo,
+                                    impresora   = linea.Impreso,
+                                    ivaVenta    = linea.IvaVenta,
+                                    propiedades = mutableListOf(),
+                                    pluadbc = linea.PluAdbc
+                                )
+                            )
+                        }
                     }
 
-                    _itemsPorMesa.value = mapa
-                    _idPedidoPorMesa.value = idsMap
-
-                    Log.i("PedidoVM", "✅ Cargadas mesas ocupadas: ${mapa.keys}")
+                    _itemsPorMesa.value    = mapa
+                    _idPedidoPorMesa.value = ids
                 }
 
                 override fun onFailure(call: Call<List<Pedido>>, t: Throwable) {
-                    Log.e("PedidoVM", "❌ Error al cargar pedidos pendientes", t)
+                    Log.e("PedidoVM", "Error cargando pendientes", t)
                 }
             })
     }
