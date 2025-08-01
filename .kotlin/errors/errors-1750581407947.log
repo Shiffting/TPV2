@@ -1,0 +1,634 @@
+kotlin version: 2.0.21
+error message: org.jetbrains.kotlin.backend.common.BackendException: Backend Internal error: Exception during IR lowering
+File being compiled: C:/Users/Emilio/AndroidStudioProjects/TPV2/app/src/main/java/com/example/tpv/ParrillaFragment.kt
+The root cause java.lang.RuntimeException was thrown at: org.jetbrains.kotlin.backend.jvm.codegen.FunctionCodegen.generate(FunctionCodegen.kt:47)
+	at org.jetbrains.kotlin.backend.common.CodegenUtil.reportBackendException(CodegenUtil.kt:253)
+	at org.jetbrains.kotlin.backend.common.CodegenUtil.reportBackendException$default(CodegenUtil.kt:236)
+	at org.jetbrains.kotlin.backend.common.phaser.PerformByIrFilePhase.invokeSequential(performByIrFile.kt:65)
+	at org.jetbrains.kotlin.backend.common.phaser.PerformByIrFilePhase.invoke(performByIrFile.kt:52)
+	at org.jetbrains.kotlin.backend.common.phaser.PerformByIrFilePhase.invoke(performByIrFile.kt:38)
+	at org.jetbrains.kotlin.backend.common.phaser.NamedCompilerPhase.phaseBody(CompilerPhase.kt:166)
+	at org.jetbrains.kotlin.backend.common.phaser.AbstractNamedCompilerPhase.invoke(CompilerPhase.kt:113)
+	at org.jetbrains.kotlin.backend.common.phaser.CompositePhase.invoke(PhaseBuilders.kt:27)
+	at org.jetbrains.kotlin.backend.common.phaser.CompositePhase.invoke(PhaseBuilders.kt:14)
+	at org.jetbrains.kotlin.backend.common.phaser.NamedCompilerPhase.phaseBody(CompilerPhase.kt:166)
+	at org.jetbrains.kotlin.backend.common.phaser.AbstractNamedCompilerPhase.invoke(CompilerPhase.kt:113)
+	at org.jetbrains.kotlin.backend.common.phaser.CompilerPhaseKt.invokeToplevel(CompilerPhase.kt:62)
+	at org.jetbrains.kotlin.backend.jvm.JvmIrCodegenFactory.invokeCodegen(JvmIrCodegenFactory.kt:371)
+	at org.jetbrains.kotlin.codegen.CodegenFactory.generateModule(CodegenFactory.kt:47)
+	at org.jetbrains.kotlin.backend.jvm.JvmIrCodegenFactory.generateModuleInFrontendIRMode(JvmIrCodegenFactory.kt:433)
+	at org.jetbrains.kotlin.cli.jvm.compiler.pipeline.JvmCompilerPipelineKt.generateCodeFromIr(jvmCompilerPipeline.kt:246)
+	at org.jetbrains.kotlin.cli.jvm.compiler.pipeline.JvmCompilerPipelineKt.compileModulesUsingFrontendIrAndLightTree(jvmCompilerPipeline.kt:142)
+	at org.jetbrains.kotlin.cli.jvm.K2JVMCompiler.doExecute(K2JVMCompiler.kt:148)
+	at org.jetbrains.kotlin.cli.jvm.K2JVMCompiler.doExecute(K2JVMCompiler.kt:43)
+	at org.jetbrains.kotlin.cli.common.CLICompiler.execImpl(CLICompiler.kt:103)
+	at org.jetbrains.kotlin.cli.common.CLICompiler.execImpl(CLICompiler.kt:49)
+	at org.jetbrains.kotlin.cli.common.CLITool.exec(CLITool.kt:101)
+	at org.jetbrains.kotlin.incremental.IncrementalJvmCompilerRunner.runCompiler(IncrementalJvmCompilerRunner.kt:464)
+	at org.jetbrains.kotlin.incremental.IncrementalJvmCompilerRunner.runCompiler(IncrementalJvmCompilerRunner.kt:73)
+	at org.jetbrains.kotlin.incremental.IncrementalCompilerRunner.doCompile(IncrementalCompilerRunner.kt:506)
+	at org.jetbrains.kotlin.incremental.IncrementalCompilerRunner.compileImpl(IncrementalCompilerRunner.kt:423)
+	at org.jetbrains.kotlin.incremental.IncrementalCompilerRunner.tryCompileIncrementally$lambda$9$compile(IncrementalCompilerRunner.kt:249)
+	at org.jetbrains.kotlin.incremental.IncrementalCompilerRunner.tryCompileIncrementally(IncrementalCompilerRunner.kt:267)
+	at org.jetbrains.kotlin.incremental.IncrementalCompilerRunner.compile(IncrementalCompilerRunner.kt:120)
+	at org.jetbrains.kotlin.daemon.CompileServiceImplBase.execIncrementalCompiler(CompileServiceImpl.kt:675)
+	at org.jetbrains.kotlin.daemon.CompileServiceImplBase.access$execIncrementalCompiler(CompileServiceImpl.kt:92)
+	at org.jetbrains.kotlin.daemon.CompileServiceImpl.compile(CompileServiceImpl.kt:1660)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source)
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+	at java.rmi/sun.rmi.server.UnicastServerRef.dispatch(Unknown Source)
+	at java.rmi/sun.rmi.transport.Transport$1.run(Unknown Source)
+	at java.rmi/sun.rmi.transport.Transport$1.run(Unknown Source)
+	at java.base/java.security.AccessController.doPrivileged(Unknown Source)
+	at java.rmi/sun.rmi.transport.Transport.serviceCall(Unknown Source)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.handleMessages(Unknown Source)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run0(Unknown Source)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.lambda$run$0(Unknown Source)
+	at java.base/java.security.AccessController.doPrivileged(Unknown Source)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.base/java.lang.Thread.run(Unknown Source)
+Caused by: java.lang.RuntimeException: Exception while generating code for:
+FUN name:onViewCreated visibility:public modality:OPEN <> ($this:com.example.tpv.ParrillaFragment, view:android.view.View, savedInstanceState:android.os.Bundle?) returnType:kotlin.Unit
+  annotations:
+    SuppressLint(value = ["SetTextI18n"])
+  overridden:
+    public open fun onViewCreated (p0: @[EnhancedNullability] android.view.View, p1: @[EnhancedNullability] android.os.Bundle?): kotlin.Unit declared in androidx.fragment.app.Fragment
+  $this: VALUE_PARAMETER name:<this> type:com.example.tpv.ParrillaFragment
+  VALUE_PARAMETER name:view index:0 type:android.view.View
+  VALUE_PARAMETER name:savedInstanceState index:1 type:android.os.Bundle?
+  BLOCK_BODY
+    CALL 'public open fun onViewCreated (p0: @[EnhancedNullability] android.view.View, p1: @[EnhancedNullability] android.os.Bundle?): kotlin.Unit declared in androidx.fragment.app.Fragment' superQualifier='CLASS IR_EXTERNAL_JAVA_DECLARATION_STUB CLASS name:Fragment modality:OPEN visibility:public superTypes:[kotlin.Any; android.content.ComponentCallbacks; android.view.View.OnCreateContextMenuListener; androidx.lifecycle.LifecycleOwner; androidx.lifecycle.ViewModelStoreOwner; androidx.lifecycle.HasDefaultViewModelProviderFactory; androidx.savedstate.SavedStateRegistryOwner; androidx.activity.result.ActivityResultCaller]' type=kotlin.Unit origin=null
+      $this: GET_VAR '<this>: com.example.tpv.ParrillaFragment declared in com.example.tpv.ParrillaFragment.onViewCreated' type=com.example.tpv.ParrillaFragment origin=null
+      p0: GET_VAR 'view: android.view.View declared in com.example.tpv.ParrillaFragment.onViewCreated' type=android.view.View origin=null
+      p1: GET_VAR 'savedInstanceState: android.os.Bundle? declared in com.example.tpv.ParrillaFragment.onViewCreated' type=android.os.Bundle? origin=null
+    VAR name:nuevoTerminal type:es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransPetNuevoTerminal [val]
+      CALL 'public final fun apply <T> (block: @[ExtensionFunctionType] kotlin.Function1<T of kotlin.StandardKt.apply, kotlin.Unit>): T of kotlin.StandardKt.apply [inline] declared in kotlin.StandardKt' type=es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransPetNuevoTerminal origin=null
+        <T>: es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransPetNuevoTerminal
+        $receiver: CONSTRUCTOR_CALL 'public constructor <init> () declared in es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransPetNuevoTerminal' type=es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransPetNuevoTerminal origin=null
+        block: BLOCK type=@[ExtensionFunctionType] kotlin.Function1<es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransPetNuevoTerminal, kotlin.Unit> origin=LAMBDA
+          COMPOSITE type=kotlin.Unit origin=null
+          FUNCTION_REFERENCE 'private final fun onViewCreated$lambda$0 (): kotlin.Unit declared in com.example.tpv.ParrillaFragment' type=@[ExtensionFunctionType] kotlin.Function1<es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransPetNuevoTerminal, kotlin.Unit> origin=INLINE_LAMBDA reflectionTarget=null
+    VAR name:terminal type:kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> [val]
+      CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.jvm.internal.Ref.ObjectRef' type=kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> origin=null
+        <class: T>: es.redsys.paysys.Operative.Managers.RedCLSTerminalData?
+    COMPOSITE type=kotlin.Unit origin=null
+    COMPOSITE type=kotlin.Unit origin=null
+      CALL 'public final fun launch$default (context: kotlin.coroutines.CoroutineContext?, start: kotlinx.coroutines.CoroutineStart?, block: @[ExtensionFunctionType] kotlin.coroutines.SuspendFunction1<kotlinx.coroutines.CoroutineScope, kotlin.Unit>, $mask0: kotlin.Int, $handler: kotlin.Any?): kotlinx.coroutines.Job declared in kotlinx.coroutines.BuildersKt' type=kotlinx.coroutines.Job origin=DEFAULT_DISPATCH_CALL
+        $receiver: CALL 'public final fun CoroutineScope (context: kotlin.coroutines.CoroutineContext): kotlinx.coroutines.CoroutineScope declared in kotlinx.coroutines.CoroutineScopeKt' type=kotlinx.coroutines.CoroutineScope origin=null
+          context: CALL 'public final fun <get-IO> (): kotlinx.coroutines.CoroutineDispatcher declared in kotlinx.coroutines.Dispatchers' type=kotlinx.coroutines.CoroutineDispatcher origin=GET_PROPERTY
+        context: COMPOSITE type=kotlin.coroutines.CoroutineContext? origin=DEFAULT_VALUE
+          CONST Null type=kotlin.coroutines.CoroutineContext? value=null
+        start: COMPOSITE type=kotlinx.coroutines.CoroutineStart? origin=DEFAULT_VALUE
+          CONST Null type=kotlinx.coroutines.CoroutineStart? value=null
+        block: BLOCK type=com.example.tpv.ParrillaFragment.onViewCreated.<no name provided> origin=null
+          CLASS SUSPEND_LAMBDA CLASS name:<no name provided> modality:FINAL visibility:public/*package*/ superTypes:[kotlin.coroutines.jvm.internal.SuspendLambda; kotlin.jvm.functions.Function2<kotlinx.coroutines.CoroutineScope, kotlin.coroutines.Continuation<kotlin.Unit>?, kotlin.Any?>]
+            $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>
+            FIELD name:label type:kotlin.Int visibility:public/*package*/
+            CONSTRUCTOR SUSPEND_LAMBDA visibility:public/*package*/ <> (this$0:com.example.tpv.ParrillaFragment, $nuevoTerminal:es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransPetNuevoTerminal, $terminal:kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?>, $completion:kotlin.coroutines.Continuation<com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>>?) returnType:com.example.tpv.ParrillaFragment.onViewCreated.<no name provided> [primary]
+              VALUE_PARAMETER BOUND_RECEIVER_PARAMETER name:this$0 index:0 type:com.example.tpv.ParrillaFragment
+              VALUE_PARAMETER BOUND_VALUE_PARAMETER name:$nuevoTerminal index:1 type:es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransPetNuevoTerminal
+              VALUE_PARAMETER BOUND_VALUE_PARAMETER name:$terminal index:2 type:kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?>
+              VALUE_PARAMETER name:$completion index:3 type:kotlin.coroutines.Continuation<com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>>?
+              BLOCK_BODY
+                SET_FIELD 'FIELD FIELD_FOR_CAPTURED_VALUE name:this$0 type:com.example.tpv.ParrillaFragment visibility:public/*package*/ [final] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>' type=kotlin.Unit origin=INITIALIZER_OF_FIELD_FOR_CAPTURED_VALUE
+                  receiver: GET_VAR '<this>: com.example.tpv.ParrillaFragment.onViewCreated.<no name provided> declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>' type=com.example.tpv.ParrillaFragment.onViewCreated.<no name provided> origin=null
+                  value: GET_VAR 'this$0: com.example.tpv.ParrillaFragment declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.<init>' type=com.example.tpv.ParrillaFragment origin=null
+                SET_FIELD 'FIELD FIELD_FOR_CAPTURED_VALUE name:$nuevoTerminal type:es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransPetNuevoTerminal visibility:public/*package*/ [final] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>' type=kotlin.Unit origin=INITIALIZER_OF_FIELD_FOR_CAPTURED_VALUE
+                  receiver: GET_VAR '<this>: com.example.tpv.ParrillaFragment.onViewCreated.<no name provided> declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>' type=com.example.tpv.ParrillaFragment.onViewCreated.<no name provided> origin=null
+                  value: GET_VAR '$nuevoTerminal: es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransPetNuevoTerminal declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.<init>' type=es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransPetNuevoTerminal origin=null
+                SET_FIELD 'FIELD FIELD_FOR_CAPTURED_VALUE name:$terminal type:kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> visibility:public/*package*/ [final] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>' type=kotlin.Unit origin=INITIALIZER_OF_FIELD_FOR_CAPTURED_VALUE
+                  receiver: GET_VAR '<this>: com.example.tpv.ParrillaFragment.onViewCreated.<no name provided> declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>' type=com.example.tpv.ParrillaFragment.onViewCreated.<no name provided> origin=null
+                  value: GET_VAR '$terminal: kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.<init>' type=kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> origin=null
+                DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> (arity: kotlin.Int, $completion: kotlin.coroutines.Continuation<kotlin.Any?>?) declared in kotlin.coroutines.jvm.internal.SuspendLambda'
+                  arity: CONST Int type=kotlin.Int value=2
+                  $completion: GET_VAR '$completion: kotlin.coroutines.Continuation<com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>>? declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.<init>' type=kotlin.coroutines.Continuation<com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>>? origin=null
+                BLOCK type=kotlin.Unit origin=null
+            FUN name:invokeSuspend visibility:public modality:FINAL <> ($this:com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>, $result:kotlin.Result<kotlin.Any?>) returnType:kotlin.Any?
+              overridden:
+                protected abstract fun invokeSuspend ($result: kotlin.Result<kotlin.Any?>): kotlin.Any? declared in kotlin.coroutines.jvm.internal.SuspendLambda
+              $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>
+              VALUE_PARAMETER name:$result index:0 type:kotlin.Result<kotlin.Any?>
+              BLOCK_BODY
+                COMPOSITE type=kotlin.Unit origin=null
+                  TRY type=kotlin.Any
+                    try: BLOCK type=kotlin.Any origin=null
+                      VAR name:response type:@[FlexibleNullability] es.redsys.paysys.clientServicesSSM.logintransparente.data.ResponseData? [val]
+                        CALL 'public open fun addTerminal (p0: @[FlexibleNullability] android.content.Context?, p1: @[FlexibleNullability] es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransPetNuevoTerminal?): @[FlexibleNullability] es.redsys.paysys.clientServicesSSM.logintransparente.data.ResponseData? declared in es.redsys.paysys.Operative.Managers.RedCLSMerchantConfigurationManager' type=@[FlexibleNullability] es.redsys.paysys.clientServicesSSM.logintransparente.data.ResponseData? origin=null
+                          p0: CALL 'public open fun getContext (): @[EnhancedNullability] android.content.Context? [fake_override] declared in com.example.tpv.ParrillaFragment' type=@[EnhancedNullability] android.content.Context? origin=GET_PROPERTY
+                            $this: GET_FIELD 'FIELD FIELD_FOR_CAPTURED_VALUE name:this$0 type:com.example.tpv.ParrillaFragment visibility:public/*package*/ [final] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>' type=com.example.tpv.ParrillaFragment origin=null
+                              receiver: GET_VAR '<this>: com.example.tpv.ParrillaFragment.onViewCreated.<no name provided> declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend' type=com.example.tpv.ParrillaFragment.onViewCreated.<no name provided> origin=null
+                          p1: GET_FIELD 'FIELD FIELD_FOR_CAPTURED_VALUE name:$nuevoTerminal type:es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransPetNuevoTerminal visibility:public/*package*/ [final] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>' type=es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransPetNuevoTerminal origin=null
+                            receiver: GET_VAR '<this>: com.example.tpv.ParrillaFragment.onViewCreated.<no name provided> declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend' type=com.example.tpv.ParrillaFragment.onViewCreated.<no name provided> origin=null
+                      WHEN type=kotlin.Any origin=IF
+                        BRANCH
+                          if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
+                            arg0: CALL 'public open fun getCode (): kotlin.Int declared in es.redsys.paysys.clientServicesSSM.logintransparente.data.ResponseData' type=kotlin.Int origin=GET_PROPERTY
+                              $this: GET_VAR 'val response: @[FlexibleNullability] es.redsys.paysys.clientServicesSSM.logintransparente.data.ResponseData? [val] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend' type=@[FlexibleNullability] es.redsys.paysys.clientServicesSSM.logintransparente.data.ResponseData? origin=null
+                            arg1: CONST Int type=kotlin.Int value=0
+                          then: BLOCK type=kotlin.Any origin=null
+                            COMPOSITE type=kotlin.Unit origin=null
+                              CALL 'public open fun d (p0: @[EnhancedNullability] kotlin.String?, p1: @[EnhancedNullability] kotlin.String): kotlin.Int declared in android.util.Log' type=kotlin.Int origin=null
+                                p0: CONST String type=kotlin.String value="LoginTrans"
+                                p1: CONST String type=kotlin.String value="Solicitud enviada. Esperando activación del terminal."
+                              COMPOSITE type=kotlin.Unit origin=null
+                            VAR name:loginResponse type:@[FlexibleNullability] es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransLoginResponse? [val]
+                              CALL 'public open fun loginWithoutUser (p0: @[FlexibleNullability] android.content.Context?): @[FlexibleNullability] es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransLoginResponse? declared in es.redsys.paysys.Operative.Managers.RedCLSMerchantConfigurationManager' type=@[FlexibleNullability] es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransLoginResponse? origin=null
+                                p0: CALL 'public open fun getContext (): @[EnhancedNullability] android.content.Context? [fake_override] declared in com.example.tpv.ParrillaFragment' type=@[EnhancedNullability] android.content.Context? origin=GET_PROPERTY
+                                  $this: GET_FIELD 'FIELD FIELD_FOR_CAPTURED_VALUE name:this$0 type:com.example.tpv.ParrillaFragment visibility:public/*package*/ [final] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>' type=com.example.tpv.ParrillaFragment origin=null
+                                    receiver: GET_VAR '<this>: com.example.tpv.ParrillaFragment.onViewCreated.<no name provided> declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend' type=com.example.tpv.ParrillaFragment.onViewCreated.<no name provided> origin=null
+                            COMPOSITE type=kotlin.Unit origin=null
+                              CALL 'public open fun d (p0: @[EnhancedNullability] kotlin.String?, p1: @[EnhancedNullability] kotlin.String): kotlin.Int declared in android.util.Log' type=kotlin.Int origin=null
+                                p0: CONST String type=kotlin.String value="respuesta login"
+                                p1: CALL 'public open fun toString (): @[EnhancedNullability] kotlin.String declared in es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransLoginResponse' type=@[EnhancedNullability] kotlin.String origin=null
+                                  $this: GET_VAR 'val loginResponse: @[FlexibleNullability] es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransLoginResponse? [val] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend' type=@[FlexibleNullability] es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransLoginResponse? origin=null
+                              COMPOSITE type=kotlin.Unit origin=null
+                            VAR name:terminal type:kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> [val]
+                              CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.jvm.internal.Ref.ObjectRef' type=kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> origin=null
+                                <class: T>: es.redsys.paysys.Operative.Managers.RedCLSTerminalData?
+                            VAR name:merchant type:es.redsys.paysys.clientServicesSSM.RedCLSMerchantData? [val]
+                              CALL 'public final fun firstOrNull <T> (): T of kotlin.collections.CollectionsKt.firstOrNull? declared in kotlin.collections.CollectionsKt' type=es.redsys.paysys.clientServicesSSM.RedCLSMerchantData? origin=null
+                                <T>: @[FlexibleNullability] es.redsys.paysys.clientServicesSSM.RedCLSMerchantData?
+                                $receiver: BLOCK type=@[FlexibleMutability] kotlin.collections.MutableList<@[FlexibleNullability] es.redsys.paysys.clientServicesSSM.RedCLSMerchantData?> origin=null
+                                  VAR IR_TEMPORARY_VARIABLE name:tmp0 type:kotlin.Any? [val]
+                                    CALL 'public open fun getMerchantList (): @[FlexibleNullability] @[FlexibleMutability] kotlin.collections.MutableList<@[FlexibleNullability] es.redsys.paysys.clientServicesSSM.RedCLSMerchantData?>? declared in es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransLoginResponse' type=@[FlexibleNullability] @[FlexibleMutability] kotlin.collections.MutableList<@[FlexibleNullability] es.redsys.paysys.clientServicesSSM.RedCLSMerchantData?>? origin=GET_PROPERTY
+                                      $this: GET_VAR 'val loginResponse: @[FlexibleNullability] es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransLoginResponse? [val] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend' type=@[FlexibleNullability] es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransLoginResponse? origin=null
+                                  CALL 'public final fun checkNotNullExpressionValue (value: kotlin.Any?, expression: kotlin.String): kotlin.Unit declared in kotlin.jvm.internal.Intrinsics' type=kotlin.Unit origin=null
+                                    value: GET_VAR 'val tmp0: kotlin.Any? [val] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend' type=kotlin.Any? origin=null
+                                    expression: CONST String type=kotlin.String value="getMerchantList(...)"
+                                  GET_VAR 'val tmp0: kotlin.Any? [val] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend' type=kotlin.Any? origin=null
+                            WHEN type=kotlin.Any origin=IF
+                              BRANCH
+                                if: CALL 'public final fun ANDAND (arg0: kotlin.Boolean, arg1: kotlin.Boolean): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=null
+                                  arg0: CALL 'public final fun not (): kotlin.Boolean [operator] declared in kotlin.Boolean' type=kotlin.Boolean origin=EXCLEQ
+                                    $this: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EXCLEQ
+                                      arg0: GET_VAR 'val merchant: es.redsys.paysys.clientServicesSSM.RedCLSMerchantData? [val] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend' type=es.redsys.paysys.clientServicesSSM.RedCLSMerchantData? origin=null
+                                      arg1: CONST Null type=kotlin.Nothing? value=null
+                                  arg1: CALL 'public final fun isNotEmpty <T> (): kotlin.Boolean [inline] declared in kotlin.collections.CollectionsKt' type=kotlin.Boolean origin=null
+                                    <T>: @[FlexibleNullability] es.redsys.paysys.Operative.Managers.RedCLSTerminalData?
+                                    $receiver: BLOCK type=@[FlexibleMutability] kotlin.collections.MutableList<@[FlexibleNullability] es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> origin=null
+                                      VAR IR_TEMPORARY_VARIABLE name:tmp1 type:kotlin.Any? [val]
+                                        CALL 'public open fun getTerminalList (): @[FlexibleNullability] @[FlexibleMutability] kotlin.collections.MutableList<@[FlexibleNullability] es.redsys.paysys.Operative.Managers.RedCLSTerminalData?>? declared in es.redsys.paysys.clientServicesSSM.RedCLSMerchantData' type=@[FlexibleNullability] @[FlexibleMutability] kotlin.collections.MutableList<@[FlexibleNullability] es.redsys.paysys.Operative.Managers.RedCLSTerminalData?>? origin=GET_PROPERTY
+                                          $this: GET_VAR 'val merchant: es.redsys.paysys.clientServicesSSM.RedCLSMerchantData? [val] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend' type=es.redsys.paysys.clientServicesSSM.RedCLSMerchantData? origin=null
+                                      CALL 'public final fun checkNotNullExpressionValue (value: kotlin.Any?, expression: kotlin.String): kotlin.Unit declared in kotlin.jvm.internal.Intrinsics' type=kotlin.Unit origin=null
+                                        value: GET_VAR 'val tmp1: kotlin.Any? [val] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend' type=kotlin.Any? origin=null
+                                        expression: CONST String type=kotlin.String value="getTerminalList(...)"
+                                      GET_VAR 'val tmp1: kotlin.Any? [val] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend' type=kotlin.Any? origin=null
+                                then: BLOCK type=kotlin.Unit origin=null
+                                  SET_FIELD 'FIELD IR_BUILTINS_STUB name:element type:T of kotlin.jvm.internal.Ref.ObjectRef visibility:public declared in kotlin.jvm.internal.Ref.ObjectRef' type=kotlin.Unit origin=EQ
+                                    receiver: GET_VAR 'val terminal: kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> [val] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend' type=kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> origin=null
+                                    value: CALL 'public abstract fun get (index: kotlin.Int): E of kotlin.collections.MutableList [fake_override,operator] declared in kotlin.collections.MutableList' type=@[FlexibleNullability] es.redsys.paysys.Operative.Managers.RedCLSTerminalData? origin=GET_ARRAY_ELEMENT
+                                      $this: CALL 'public open fun getTerminalList (): @[FlexibleNullability] @[FlexibleMutability] kotlin.collections.MutableList<@[FlexibleNullability] es.redsys.paysys.Operative.Managers.RedCLSTerminalData?>? declared in es.redsys.paysys.clientServicesSSM.RedCLSMerchantData' type=@[FlexibleNullability] @[FlexibleMutability] kotlin.collections.MutableList<@[FlexibleNullability] es.redsys.paysys.Operative.Managers.RedCLSTerminalData?>? origin=GET_PROPERTY
+                                        $this: GET_VAR 'val merchant: es.redsys.paysys.clientServicesSSM.RedCLSMerchantData? [val] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend' type=es.redsys.paysys.clientServicesSSM.RedCLSMerchantData? origin=null
+                                      index: CONST Int type=kotlin.Int value=0
+                                  COMPOSITE type=kotlin.Unit origin=null
+                                    CALL 'public open fun d (p0: @[EnhancedNullability] kotlin.String?, p1: @[EnhancedNullability] kotlin.String): kotlin.Int declared in android.util.Log' type=kotlin.Int origin=null
+                                      p0: CONST String type=kotlin.String value="Terminal"
+                                      p1: STRING_CONCATENATION type=kotlin.String
+                                        CONST String type=kotlin.String value="Terminal cargado: "
+                                        CALL 'public open fun getTerminal (): @[FlexibleNullability] kotlin.String? declared in es.redsys.paysys.Operative.Managers.RedCLSTerminalData' type=@[FlexibleNullability] kotlin.String? origin=GET_PROPERTY
+                                          $this: WHEN type=es.redsys.paysys.Operative.Managers.RedCLSTerminalData origin=null
+                                            BRANCH
+                                              if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
+                                                arg0: GET_FIELD 'FIELD IR_BUILTINS_STUB name:element type:T of kotlin.jvm.internal.Ref.ObjectRef visibility:public declared in kotlin.jvm.internal.Ref.ObjectRef' type=es.redsys.paysys.Operative.Managers.RedCLSTerminalData? origin=null
+                                                  receiver: GET_VAR 'val terminal: kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> [val] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend' type=kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> origin=null
+                                                arg1: CONST Null type=kotlin.Nothing? value=null
+                                              then: BLOCK type=kotlin.Unit origin=null
+                                                CALL 'public final fun throwUninitializedPropertyAccessException (propertyName: kotlin.String): kotlin.Unit declared in kotlin.jvm.internal.Intrinsics' type=kotlin.Unit origin=null
+                                                  propertyName: CONST String type=kotlin.String value="terminal"
+                                            BRANCH
+                                              if: CONST Boolean type=kotlin.Boolean value=true
+                                              then: GET_FIELD 'FIELD IR_BUILTINS_STUB name:element type:T of kotlin.jvm.internal.Ref.ObjectRef visibility:public declared in kotlin.jvm.internal.Ref.ObjectRef' type=es.redsys.paysys.Operative.Managers.RedCLSTerminalData? origin=null
+                                                receiver: GET_VAR 'val terminal: kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> [val] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend' type=kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> origin=null
+                                    COMPOSITE type=kotlin.Unit origin=null
+                                  CALL 'public final fun withContext <T> (context: kotlin.coroutines.CoroutineContext, block: @[ExtensionFunctionType] kotlin.coroutines.SuspendFunction1<kotlinx.coroutines.CoroutineScope, T of kotlinx.coroutines.BuildersKt.withContext>, $completion: kotlin.coroutines.Continuation<T of kotlinx.coroutines.BuildersKt.withContext>): kotlin.Any? [suspend] declared in kotlinx.coroutines.BuildersKt' type=kotlin.Unit origin=null
+                                    <T>: kotlin.Unit
+                                    context: CALL 'public final fun <get-Main> (): kotlinx.coroutines.MainCoroutineDispatcher declared in kotlinx.coroutines.Dispatchers' type=kotlinx.coroutines.MainCoroutineDispatcher origin=GET_PROPERTY
+                                    block: BLOCK type=com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided> origin=null
+                                      CLASS SUSPEND_LAMBDA CLASS name:<no name provided> modality:FINAL visibility:public/*package*/ superTypes:[kotlin.coroutines.jvm.internal.SuspendLambda; kotlin.jvm.functions.Function2<kotlinx.coroutines.CoroutineScope, kotlin.coroutines.Continuation<kotlin.Unit>?, kotlin.Any?>]
+                                        $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>
+                                        FIELD name:label type:kotlin.Int visibility:public/*package*/
+                                        CONSTRUCTOR SUSPEND_LAMBDA visibility:public/*package*/ <> ($terminal:kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?>, $terminal$1:kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?>, $completion:kotlin.coroutines.Continuation<com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>>?) returnType:com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided> [primary]
+                                          VALUE_PARAMETER BOUND_VALUE_PARAMETER name:$terminal index:0 type:kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?>
+                                          VALUE_PARAMETER BOUND_VALUE_PARAMETER name:$terminal$1 index:1 type:kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?>
+                                          VALUE_PARAMETER name:$completion index:2 type:kotlin.coroutines.Continuation<com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>>?
+                                          BLOCK_BODY
+                                            SET_FIELD 'FIELD FIELD_FOR_CAPTURED_VALUE name:$terminal type:kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> visibility:public/*package*/ [final] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>' type=kotlin.Unit origin=INITIALIZER_OF_FIELD_FOR_CAPTURED_VALUE
+                                              receiver: GET_VAR '<this>: com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided> declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>' type=com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided> origin=null
+                                              value: GET_VAR '$terminal: kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>.<init>' type=kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> origin=null
+                                            SET_FIELD 'FIELD FIELD_FOR_CAPTURED_VALUE name:$terminal$1 type:kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> visibility:public/*package*/ [final] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>' type=kotlin.Unit origin=INITIALIZER_OF_FIELD_FOR_CAPTURED_VALUE
+                                              receiver: GET_VAR '<this>: com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided> declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>' type=com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided> origin=null
+                                              value: GET_VAR '$terminal$1: kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>.<init>' type=kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> origin=null
+                                            DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> (arity: kotlin.Int, $completion: kotlin.coroutines.Continuation<kotlin.Any?>?) declared in kotlin.coroutines.jvm.internal.SuspendLambda'
+                                              arity: CONST Int type=kotlin.Int value=2
+                                              $completion: GET_VAR '$completion: kotlin.coroutines.Continuation<com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>>? declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>.<init>' type=kotlin.coroutines.Continuation<com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>>? origin=null
+                                            BLOCK type=kotlin.Unit origin=null
+                                        FUN name:invokeSuspend visibility:public modality:FINAL <> ($this:com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>, $result:kotlin.Result<kotlin.Any?>) returnType:kotlin.Any?
+                                          overridden:
+                                            protected abstract fun invokeSuspend ($result: kotlin.Result<kotlin.Any?>): kotlin.Any? declared in kotlin.coroutines.jvm.internal.SuspendLambda
+                                          $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>
+                                          VALUE_PARAMETER name:$result index:0 type:kotlin.Result<kotlin.Any?>
+                                          BLOCK_BODY
+                                            CALL 'public final fun access$onViewCreated$mostrarResultado (terminal: kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?>, resultado: es.redsys.paysys.Operative.Managers.RedCLSTerminalData): kotlin.Unit declared in com.example.tpv.ParrillaFragment' type=kotlin.Unit origin=null
+                                              terminal: GET_FIELD 'FIELD FIELD_FOR_CAPTURED_VALUE name:$terminal$1 type:kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> visibility:public/*package*/ [final] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>' type=kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> origin=null
+                                                receiver: GET_VAR '<this>: com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided> declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>.invokeSuspend' type=com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided> origin=null
+                                              resultado: WHEN type=es.redsys.paysys.Operative.Managers.RedCLSTerminalData origin=null
+                                                BRANCH
+                                                  if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
+                                                    arg0: GET_FIELD 'FIELD IR_BUILTINS_STUB name:element type:T of kotlin.jvm.internal.Ref.ObjectRef visibility:public declared in kotlin.jvm.internal.Ref.ObjectRef' type=es.redsys.paysys.Operative.Managers.RedCLSTerminalData? origin=null
+                                                      receiver: GET_FIELD 'FIELD FIELD_FOR_CAPTURED_VALUE name:$terminal type:kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> visibility:public/*package*/ [final] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>' type=kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> origin=null
+                                                        receiver: GET_VAR '<this>: com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided> declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>.invokeSuspend' type=com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided> origin=null
+                                                    arg1: CONST Null type=kotlin.Nothing? value=null
+                                                  then: BLOCK type=kotlin.Unit origin=null
+                                                    CALL 'public final fun throwUninitializedPropertyAccessException (propertyName: kotlin.String): kotlin.Unit declared in kotlin.jvm.internal.Intrinsics' type=kotlin.Unit origin=null
+                                                      propertyName: CONST String type=kotlin.String value="terminal"
+                                                BRANCH
+                                                  if: CONST Boolean type=kotlin.Boolean value=true
+                                                  then: GET_FIELD 'FIELD IR_BUILTINS_STUB name:element type:T of kotlin.jvm.internal.Ref.ObjectRef visibility:public declared in kotlin.jvm.internal.Ref.ObjectRef' type=es.redsys.paysys.Operative.Managers.RedCLSTerminalData? origin=null
+                                                    receiver: GET_FIELD 'FIELD FIELD_FOR_CAPTURED_VALUE name:$terminal type:kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> visibility:public/*package*/ [final] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>' type=kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> origin=null
+                                                      receiver: GET_VAR '<this>: com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided> declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>.invokeSuspend' type=com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided> origin=null
+                                        FUN name:create visibility:public modality:FINAL <> ($this:com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>, value:kotlin.Any?, $completion:kotlin.coroutines.Continuation<kotlin.Nothing>) returnType:kotlin.coroutines.Continuation<kotlin.Unit>
+                                          overridden:
+                                            public open fun create (value: kotlin.Any?, $completion: kotlin.coroutines.Continuation<kotlin.Nothing>): kotlin.coroutines.Continuation<kotlin.Unit> declared in kotlin.coroutines.jvm.internal.SuspendLambda
+                                          $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>
+                                          VALUE_PARAMETER name:value index:0 type:kotlin.Any?
+                                          VALUE_PARAMETER name:$completion index:1 type:kotlin.coroutines.Continuation<kotlin.Nothing>
+                                          BLOCK_BODY
+                                            RETURN type=kotlin.Nothing from='public final fun create (value: kotlin.Any?, $completion: kotlin.coroutines.Continuation<kotlin.Nothing>): kotlin.coroutines.Continuation<kotlin.Unit> declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>'
+                                              CONSTRUCTOR_CALL 'public/*package*/ constructor <init> ($terminal: kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?>, $terminal$1: kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?>, $completion: kotlin.coroutines.Continuation<com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>>?) [primary] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>' type=com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided> origin=null
+                                                $terminal: GET_FIELD 'FIELD FIELD_FOR_CAPTURED_VALUE name:$terminal type:kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> visibility:public/*package*/ [final] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>' type=kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> origin=null
+                                                  receiver: GET_VAR '<this>: com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided> declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>.create' type=com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided> origin=null
+                                                $terminal$1: GET_FIELD 'FIELD FIELD_FOR_CAPTURED_VALUE name:$terminal$1 type:kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> visibility:public/*package*/ [final] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>' type=kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> origin=null
+                                                  receiver: GET_VAR '<this>: com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided> declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>.create' type=com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided> origin=null
+                                                $completion: GET_VAR '$completion: kotlin.coroutines.Continuation<kotlin.Nothing> declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>.create' type=kotlin.coroutines.Continuation<kotlin.Nothing> origin=null
+                                        FUN name:invoke visibility:public modality:FINAL <> ($this:com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>, p1:kotlinx.coroutines.CoroutineScope, p2:kotlin.coroutines.Continuation<kotlin.Unit>?) returnType:kotlin.Any?
+                                          overridden:
+                                            public abstract fun invoke (p1: P1 of kotlin.jvm.functions.Function2, p2: P2 of kotlin.jvm.functions.Function2): R of kotlin.jvm.functions.Function2 declared in kotlin.jvm.functions.Function2
+                                          $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>
+                                          VALUE_PARAMETER name:p1 index:0 type:kotlinx.coroutines.CoroutineScope
+                                          VALUE_PARAMETER name:p2 index:1 type:kotlin.coroutines.Continuation<kotlin.Unit>?
+                                          BLOCK_BODY
+                                            RETURN type=kotlin.Nothing from='public final fun invoke (p1: kotlinx.coroutines.CoroutineScope, p2: kotlin.coroutines.Continuation<kotlin.Unit>?): kotlin.Any? declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>'
+                                              CALL 'public final fun invokeSuspend ($result: kotlin.Result<kotlin.Any?>): kotlin.Any? declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>' type=kotlin.Any? origin=null
+                                                $this: TYPE_OP type=com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided> origin=IMPLICIT_CAST typeOperand=com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>
+                                                  CALL 'public final fun create (value: kotlin.Any?, $completion: kotlin.coroutines.Continuation<kotlin.Nothing>): kotlin.coroutines.Continuation<kotlin.Unit> declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>' type=kotlin.coroutines.Continuation<kotlin.Unit> origin=null
+                                                    $this: GET_VAR '<this>: com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided> declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>.invoke' type=com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided> origin=null
+                                                    value: GET_VAR 'p1: kotlinx.coroutines.CoroutineScope declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>.invoke' type=kotlinx.coroutines.CoroutineScope origin=null
+                                                    $completion: GET_VAR 'p2: kotlin.coroutines.Continuation<kotlin.Unit>? declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>.invoke' type=kotlin.coroutines.Continuation<kotlin.Unit>? origin=null
+                                                $result: CALL 'public final fun <unsafe-coerce> <T, R> (v: T of kotlin.jvm.internal.<unsafe-coerce>): R of kotlin.jvm.internal.<unsafe-coerce> declared in kotlin.jvm.internal' type=kotlin.Result<kotlin.Any?> origin=null
+                                                  <T>: kotlin.Any?
+                                                  <R>: kotlin.Result<kotlin.Any?>
+                                                  v: GET_FIELD 'FIELD FIELD_FOR_OBJECT_INSTANCE name:INSTANCE type:kotlin.Unit visibility:public [final,static] declared in kotlin.Unit' type=kotlin.Unit origin=null
+                                        FIELD FIELD_FOR_CAPTURED_VALUE name:$terminal type:kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> visibility:public/*package*/ [final]
+                                        FIELD FIELD_FOR_CAPTURED_VALUE name:$terminal$1 type:kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> visibility:public/*package*/ [final]
+                                        FUN BRIDGE name:invoke visibility:public modality:OPEN <> ($this:com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>, p1:kotlin.Any?, p2:kotlin.Any?) returnType:kotlin.Any?
+                                          $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>
+                                          VALUE_PARAMETER BRIDGE name:p1 index:0 type:kotlin.Any?
+                                          VALUE_PARAMETER BRIDGE name:p2 index:1 type:kotlin.Any?
+                                          EXPRESSION_BODY
+                                            RETURN type=kotlin.Nothing from='public open fun invoke (p1: kotlin.Any?, p2: kotlin.Any?): kotlin.Any? declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>'
+                                              CALL 'public final fun invoke (p1: kotlinx.coroutines.CoroutineScope, p2: kotlin.coroutines.Continuation<kotlin.Unit>?): kotlin.Any? declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>' type=kotlin.Any? origin=BRIDGE_DELEGATION
+                                                $this: GET_VAR '<this>: com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided> declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>.invoke' type=com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided> origin=null
+                                                p1: TYPE_OP type=kotlinx.coroutines.CoroutineScope origin=IMPLICIT_CAST typeOperand=kotlinx.coroutines.CoroutineScope
+                                                  GET_VAR 'p1: kotlin.Any? declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>.invoke' type=kotlin.Any? origin=null
+                                                p2: TYPE_OP type=kotlin.coroutines.Continuation<*> origin=IMPLICIT_CAST typeOperand=kotlin.coroutines.Continuation<*>
+                                                  GET_VAR 'p2: kotlin.Any? declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>.invoke' type=kotlin.Any? origin=null
+                                      CONSTRUCTOR_CALL 'public/*package*/ constructor <init> ($terminal: kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?>, $terminal$1: kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?>, $completion: kotlin.coroutines.Continuation<com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>>?) [primary] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided>' type=com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend.<no name provided> origin=null
+                                        $terminal: GET_VAR 'val terminal: kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> [val] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend' type=kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> origin=null
+                                        $terminal$1: GET_FIELD 'FIELD FIELD_FOR_CAPTURED_VALUE name:$terminal type:kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> visibility:public/*package*/ [final] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>' type=kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> origin=null
+                                          receiver: GET_VAR '<this>: com.example.tpv.ParrillaFragment.onViewCreated.<no name provided> declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend' type=com.example.tpv.ParrillaFragment.onViewCreated.<no name provided> origin=null
+                                        $completion: CONST Null type=kotlin.Nothing? value=null
+                                    $completion: GET_VAR '<this>: com.example.tpv.ParrillaFragment.onViewCreated.<no name provided> declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend' type=com.example.tpv.ParrillaFragment.onViewCreated.<no name provided> origin=null
+                              BRANCH
+                                if: CONST Boolean type=kotlin.Boolean value=true
+                                then: BLOCK type=kotlin.Int origin=null
+                                  CALL 'public open fun e (p0: @[EnhancedNullability] kotlin.String?, p1: @[EnhancedNullability] kotlin.String): kotlin.Int declared in android.util.Log' type=kotlin.Int origin=null
+                                    p0: CONST String type=kotlin.String value="LoginTrans"
+                                    p1: CONST String type=kotlin.String value="No se encontraron terminales."
+                        BRANCH
+                          if: CONST Boolean type=kotlin.Boolean value=true
+                          then: BLOCK type=kotlin.Int origin=null
+                            CALL 'public open fun e (p0: @[EnhancedNullability] kotlin.String?, p1: @[EnhancedNullability] kotlin.String): kotlin.Int declared in android.util.Log' type=kotlin.Int origin=null
+                              p0: CONST String type=kotlin.String value="LoginTrans"
+                              p1: STRING_CONCATENATION type=kotlin.String
+                                CONST String type=kotlin.String value="Error: "
+                                CALL 'public open fun getDesc (): @[FlexibleNullability] kotlin.String? declared in es.redsys.paysys.clientServicesSSM.logintransparente.data.ResponseData' type=@[FlexibleNullability] kotlin.String? origin=GET_PROPERTY
+                                  $this: GET_VAR 'val response: @[FlexibleNullability] es.redsys.paysys.clientServicesSSM.logintransparente.data.ResponseData? [val] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend' type=@[FlexibleNullability] es.redsys.paysys.clientServicesSSM.logintransparente.data.ResponseData? origin=null
+                    CATCH parameter=val e: java.lang.Exception [val] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend
+                      VAR CATCH_PARAMETER name:e type:java.lang.Exception [val]
+                      BLOCK type=kotlin.Unit origin=null
+                        CALL 'public open fun printStackTrace (): kotlin.Unit [fake_override] declared in java.lang.Exception' type=kotlin.Unit origin=null
+                          $this: GET_VAR 'val e: java.lang.Exception [val] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invokeSuspend' type=java.lang.Exception origin=null
+                  COMPOSITE type=kotlin.Unit origin=null
+            FUN name:create visibility:public modality:FINAL <> ($this:com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>, value:kotlin.Any?, $completion:kotlin.coroutines.Continuation<kotlin.Nothing>) returnType:kotlin.coroutines.Continuation<kotlin.Unit>
+              overridden:
+                public open fun create (value: kotlin.Any?, $completion: kotlin.coroutines.Continuation<kotlin.Nothing>): kotlin.coroutines.Continuation<kotlin.Unit> declared in kotlin.coroutines.jvm.internal.SuspendLambda
+              $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>
+              VALUE_PARAMETER name:value index:0 type:kotlin.Any?
+              VALUE_PARAMETER name:$completion index:1 type:kotlin.coroutines.Continuation<kotlin.Nothing>
+              BLOCK_BODY
+                RETURN type=kotlin.Nothing from='public final fun create (value: kotlin.Any?, $completion: kotlin.coroutines.Continuation<kotlin.Nothing>): kotlin.coroutines.Continuation<kotlin.Unit> declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>'
+                  CONSTRUCTOR_CALL 'public/*package*/ constructor <init> (this$0: com.example.tpv.ParrillaFragment, $nuevoTerminal: es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransPetNuevoTerminal, $terminal: kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?>, $completion: kotlin.coroutines.Continuation<com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>>?) [primary] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>' type=com.example.tpv.ParrillaFragment.onViewCreated.<no name provided> origin=null
+                    this$0: GET_FIELD 'FIELD FIELD_FOR_CAPTURED_VALUE name:this$0 type:com.example.tpv.ParrillaFragment visibility:public/*package*/ [final] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>' type=com.example.tpv.ParrillaFragment origin=null
+                      receiver: GET_VAR '<this>: com.example.tpv.ParrillaFragment.onViewCreated.<no name provided> declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.create' type=com.example.tpv.ParrillaFragment.onViewCreated.<no name provided> origin=null
+                    $nuevoTerminal: GET_FIELD 'FIELD FIELD_FOR_CAPTURED_VALUE name:$nuevoTerminal type:es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransPetNuevoTerminal visibility:public/*package*/ [final] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>' type=es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransPetNuevoTerminal origin=null
+                      receiver: GET_VAR '<this>: com.example.tpv.ParrillaFragment.onViewCreated.<no name provided> declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.create' type=com.example.tpv.ParrillaFragment.onViewCreated.<no name provided> origin=null
+                    $terminal: GET_FIELD 'FIELD FIELD_FOR_CAPTURED_VALUE name:$terminal type:kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> visibility:public/*package*/ [final] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>' type=kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> origin=null
+                      receiver: GET_VAR '<this>: com.example.tpv.ParrillaFragment.onViewCreated.<no name provided> declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.create' type=com.example.tpv.ParrillaFragment.onViewCreated.<no name provided> origin=null
+                    $completion: GET_VAR '$completion: kotlin.coroutines.Continuation<kotlin.Nothing> declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.create' type=kotlin.coroutines.Continuation<kotlin.Nothing> origin=null
+            FUN name:invoke visibility:public modality:FINAL <> ($this:com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>, p1:kotlinx.coroutines.CoroutineScope, p2:kotlin.coroutines.Continuation<kotlin.Unit>?) returnType:kotlin.Any?
+              overridden:
+                public abstract fun invoke (p1: P1 of kotlin.jvm.functions.Function2, p2: P2 of kotlin.jvm.functions.Function2): R of kotlin.jvm.functions.Function2 declared in kotlin.jvm.functions.Function2
+              $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>
+              VALUE_PARAMETER name:p1 index:0 type:kotlinx.coroutines.CoroutineScope
+              VALUE_PARAMETER name:p2 index:1 type:kotlin.coroutines.Continuation<kotlin.Unit>?
+              BLOCK_BODY
+                RETURN type=kotlin.Nothing from='public final fun invoke (p1: kotlinx.coroutines.CoroutineScope, p2: kotlin.coroutines.Continuation<kotlin.Unit>?): kotlin.Any? declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>'
+                  CALL 'public final fun invokeSuspend ($result: kotlin.Result<kotlin.Any?>): kotlin.Any? declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>' type=kotlin.Any? origin=null
+                    $this: TYPE_OP type=com.example.tpv.ParrillaFragment.onViewCreated.<no name provided> origin=IMPLICIT_CAST typeOperand=com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>
+                      CALL 'public final fun create (value: kotlin.Any?, $completion: kotlin.coroutines.Continuation<kotlin.Nothing>): kotlin.coroutines.Continuation<kotlin.Unit> declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>' type=kotlin.coroutines.Continuation<kotlin.Unit> origin=null
+                        $this: GET_VAR '<this>: com.example.tpv.ParrillaFragment.onViewCreated.<no name provided> declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invoke' type=com.example.tpv.ParrillaFragment.onViewCreated.<no name provided> origin=null
+                        value: GET_VAR 'p1: kotlinx.coroutines.CoroutineScope declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invoke' type=kotlinx.coroutines.CoroutineScope origin=null
+                        $completion: GET_VAR 'p2: kotlin.coroutines.Continuation<kotlin.Unit>? declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invoke' type=kotlin.coroutines.Continuation<kotlin.Unit>? origin=null
+                    $result: CALL 'public final fun <unsafe-coerce> <T, R> (v: T of kotlin.jvm.internal.<unsafe-coerce>): R of kotlin.jvm.internal.<unsafe-coerce> declared in kotlin.jvm.internal' type=kotlin.Result<kotlin.Any?> origin=null
+                      <T>: kotlin.Any?
+                      <R>: kotlin.Result<kotlin.Any?>
+                      v: GET_FIELD 'FIELD FIELD_FOR_OBJECT_INSTANCE name:INSTANCE type:kotlin.Unit visibility:public [final,static] declared in kotlin.Unit' type=kotlin.Unit origin=null
+            FIELD FIELD_FOR_CAPTURED_VALUE name:this$0 type:com.example.tpv.ParrillaFragment visibility:public/*package*/ [final]
+            FIELD FIELD_FOR_CAPTURED_VALUE name:$nuevoTerminal type:es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransPetNuevoTerminal visibility:public/*package*/ [final]
+            FIELD FIELD_FOR_CAPTURED_VALUE name:$terminal type:kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> visibility:public/*package*/ [final]
+            FUN BRIDGE name:invoke visibility:public modality:OPEN <> ($this:com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>, p1:kotlin.Any?, p2:kotlin.Any?) returnType:kotlin.Any?
+              $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>
+              VALUE_PARAMETER BRIDGE name:p1 index:0 type:kotlin.Any?
+              VALUE_PARAMETER BRIDGE name:p2 index:1 type:kotlin.Any?
+              EXPRESSION_BODY
+                RETURN type=kotlin.Nothing from='public open fun invoke (p1: kotlin.Any?, p2: kotlin.Any?): kotlin.Any? declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>'
+                  CALL 'public final fun invoke (p1: kotlinx.coroutines.CoroutineScope, p2: kotlin.coroutines.Continuation<kotlin.Unit>?): kotlin.Any? declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>' type=kotlin.Any? origin=BRIDGE_DELEGATION
+                    $this: GET_VAR '<this>: com.example.tpv.ParrillaFragment.onViewCreated.<no name provided> declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invoke' type=com.example.tpv.ParrillaFragment.onViewCreated.<no name provided> origin=null
+                    p1: TYPE_OP type=kotlinx.coroutines.CoroutineScope origin=IMPLICIT_CAST typeOperand=kotlinx.coroutines.CoroutineScope
+                      GET_VAR 'p1: kotlin.Any? declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invoke' type=kotlin.Any? origin=null
+                    p2: TYPE_OP type=kotlin.coroutines.Continuation<*> origin=IMPLICIT_CAST typeOperand=kotlin.coroutines.Continuation<*>
+                      GET_VAR 'p2: kotlin.Any? declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>.invoke' type=kotlin.Any? origin=null
+          CONSTRUCTOR_CALL 'public/*package*/ constructor <init> (this$0: com.example.tpv.ParrillaFragment, $nuevoTerminal: es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransPetNuevoTerminal, $terminal: kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?>, $completion: kotlin.coroutines.Continuation<com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>>?) [primary] declared in com.example.tpv.ParrillaFragment.onViewCreated.<no name provided>' type=com.example.tpv.ParrillaFragment.onViewCreated.<no name provided> origin=null
+            this$0: GET_VAR '<this>: com.example.tpv.ParrillaFragment declared in com.example.tpv.ParrillaFragment.onViewCreated' type=com.example.tpv.ParrillaFragment origin=null
+            $nuevoTerminal: GET_VAR 'val nuevoTerminal: es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransPetNuevoTerminal [val] declared in com.example.tpv.ParrillaFragment.onViewCreated' type=es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransPetNuevoTerminal origin=null
+            $terminal: GET_VAR 'val terminal: kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> [val] declared in com.example.tpv.ParrillaFragment.onViewCreated' type=kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> origin=null
+            $completion: CONST Null type=kotlin.Nothing? value=null
+        $mask0: CONST Int type=kotlin.Int value=3
+        $handler: CONST Null type=kotlin.Any? value=null
+      COMPOSITE type=kotlin.Unit origin=null
+    SET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:layoutCategorias type:android.widget.GridLayout? visibility:private' type=kotlin.Unit origin=null
+      receiver: GET_VAR '<this>: com.example.tpv.ParrillaFragment declared in com.example.tpv.ParrillaFragment.onViewCreated' type=com.example.tpv.ParrillaFragment origin=null
+      value: CALL 'public final fun findViewById <T> (p0: kotlin.Int): @[FlexibleNullability] T of android.view.View.findViewById? declared in android.view.View' type=@[FlexibleNullability] android.widget.GridLayout? origin=null
+        <T>: @[FlexibleNullability] android.widget.GridLayout?
+        $this: GET_VAR 'view: android.view.View declared in com.example.tpv.ParrillaFragment.onViewCreated' type=android.view.View origin=null
+        p0: GET_FIELD 'FIELD IR_EXTERNAL_JAVA_DECLARATION_STUB name:layoutCategorias type:kotlin.Int visibility:public [static] declared in com.example.tpv.R.id' type=kotlin.Int superQualifierSymbol=com.example.tpv.R.id origin=null
+    SET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:layoutProductos type:android.widget.GridLayout? visibility:private' type=kotlin.Unit origin=null
+      receiver: GET_VAR '<this>: com.example.tpv.ParrillaFragment declared in com.example.tpv.ParrillaFragment.onViewCreated' type=com.example.tpv.ParrillaFragment origin=null
+      value: CALL 'public final fun findViewById <T> (p0: kotlin.Int): @[FlexibleNullability] T of android.view.View.findViewById? declared in android.view.View' type=@[FlexibleNullability] android.widget.GridLayout? origin=null
+        <T>: @[FlexibleNullability] android.widget.GridLayout?
+        $this: GET_VAR 'view: android.view.View declared in com.example.tpv.ParrillaFragment.onViewCreated' type=android.view.View origin=null
+        p0: GET_FIELD 'FIELD IR_EXTERNAL_JAVA_DECLARATION_STUB name:layoutProductos type:kotlin.Int visibility:public [static] declared in com.example.tpv.R.id' type=kotlin.Int superQualifierSymbol=com.example.tpv.R.id origin=null
+    SET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:layoutTicketItems type:android.widget.LinearLayout? visibility:private' type=kotlin.Unit origin=null
+      receiver: GET_VAR '<this>: com.example.tpv.ParrillaFragment declared in com.example.tpv.ParrillaFragment.onViewCreated' type=com.example.tpv.ParrillaFragment origin=null
+      value: CALL 'public final fun findViewById <T> (p0: kotlin.Int): @[FlexibleNullability] T of android.view.View.findViewById? declared in android.view.View' type=@[FlexibleNullability] android.widget.LinearLayout? origin=null
+        <T>: @[FlexibleNullability] android.widget.LinearLayout?
+        $this: GET_VAR 'view: android.view.View declared in com.example.tpv.ParrillaFragment.onViewCreated' type=android.view.View origin=null
+        p0: GET_FIELD 'FIELD IR_EXTERNAL_JAVA_DECLARATION_STUB name:layoutTicketItems type:kotlin.Int visibility:public [static] declared in com.example.tpv.R.id' type=kotlin.Int superQualifierSymbol=com.example.tpv.R.id origin=null
+    CALL 'public final fun cargarFamilias (): kotlin.Unit declared in com.example.tpv.ProductosViewModel' type=kotlin.Unit origin=null
+      $this: CALL 'private final fun <get-productosViewModel> (): com.example.tpv.ProductosViewModel declared in com.example.tpv.ParrillaFragment' type=com.example.tpv.ProductosViewModel origin=GET_PROPERTY
+        $this: GET_VAR '<this>: com.example.tpv.ParrillaFragment declared in com.example.tpv.ParrillaFragment.onViewCreated' type=com.example.tpv.ParrillaFragment origin=null
+    CALL 'public final fun cargarProductos (): kotlin.Unit declared in com.example.tpv.ProductosViewModel' type=kotlin.Unit origin=null
+      $this: CALL 'private final fun <get-productosViewModel> (): com.example.tpv.ProductosViewModel declared in com.example.tpv.ParrillaFragment' type=com.example.tpv.ProductosViewModel origin=GET_PROPERTY
+        $this: GET_VAR '<this>: com.example.tpv.ParrillaFragment declared in com.example.tpv.ParrillaFragment.onViewCreated' type=com.example.tpv.ParrillaFragment origin=null
+    CALL 'public open fun observe (p0: @[EnhancedNullability] androidx.lifecycle.LifecycleOwner, p1: @[EnhancedNullability] androidx.lifecycle.Observer<in @[FlexibleNullability] T of androidx.lifecycle.LiveData?>): kotlin.Unit declared in androidx.lifecycle.LiveData' type=kotlin.Unit origin=null
+      $this: CALL 'public final fun <get-familias> (): androidx.lifecycle.LiveData<kotlin.collections.List<com.example.tpv.data.model.FamiliaProducto>> declared in com.example.tpv.ProductosViewModel' type=androidx.lifecycle.LiveData<kotlin.collections.List<com.example.tpv.data.model.FamiliaProducto>> origin=GET_PROPERTY
+        $this: CALL 'private final fun <get-productosViewModel> (): com.example.tpv.ProductosViewModel declared in com.example.tpv.ParrillaFragment' type=com.example.tpv.ProductosViewModel origin=GET_PROPERTY
+          $this: GET_VAR '<this>: com.example.tpv.ParrillaFragment declared in com.example.tpv.ParrillaFragment.onViewCreated' type=com.example.tpv.ParrillaFragment origin=null
+      p0: CALL 'public open fun getViewLifecycleOwner (): @[EnhancedNullability] androidx.lifecycle.LifecycleOwner [fake_override] declared in com.example.tpv.ParrillaFragment' type=@[EnhancedNullability] androidx.lifecycle.LifecycleOwner origin=GET_PROPERTY
+        $this: GET_VAR '<this>: com.example.tpv.ParrillaFragment declared in com.example.tpv.ParrillaFragment.onViewCreated' type=com.example.tpv.ParrillaFragment origin=null
+      p1: BLOCK type=@[RawType] androidx.lifecycle.Observer<T of androidx.lifecycle.Observer> origin=null
+        VAR IR_TEMPORARY_VARIABLE name:tmp type:kotlin.Function1<kotlin.Any?, kotlin.Unit> [val]
+          TYPE_OP type=kotlin.Function1<kotlin.Any?, kotlin.Unit> origin=IMPLICIT_CAST typeOperand=kotlin.Function1<kotlin.Any?, kotlin.Unit>
+            BLOCK type=kotlin.Function1<@[FlexibleNullability] kotlin.collections.List<com.example.tpv.data.model.FamiliaProducto>?, kotlin.Unit> origin=LAMBDA
+              COMPOSITE type=kotlin.Unit origin=null
+              CALL 'public final fun <jvm-indy> <T> (dynamicCall: T of kotlin.jvm.internal.<jvm-indy>, bootstrapMethodHandle: kotlin.Any, vararg bootstrapMethodArguments: kotlin.Any): T of kotlin.jvm.internal.<jvm-indy> declared in kotlin.jvm.internal' type=kotlin.Function1<@[FlexibleNullability] kotlin.collections.List<com.example.tpv.data.model.FamiliaProducto>?, kotlin.Unit> origin=null
+                <T>: kotlin.Function1<@[FlexibleNullability] kotlin.collections.List<com.example.tpv.data.model.FamiliaProducto>?, kotlin.Unit>
+                dynamicCall: CALL 'public final fun invoke (p0: com.example.tpv.ParrillaFragment): kotlin.Function1<@[FlexibleNullability] kotlin.collections.List<com.example.tpv.data.model.FamiliaProducto>?, kotlin.Unit> declared in kotlin.jvm.internal.invokeDynamic' type=kotlin.Function1<@[FlexibleNullability] kotlin.collections.List<com.example.tpv.data.model.FamiliaProducto>?, kotlin.Unit> origin=null
+                  p0: GET_VAR '<this>: com.example.tpv.ParrillaFragment declared in com.example.tpv.ParrillaFragment.onViewCreated' type=com.example.tpv.ParrillaFragment origin=null
+                bootstrapMethodHandle: CALL 'public final fun <jvm-method-handle> (tag: kotlin.Int, owner: kotlin.String, name: kotlin.String, descriptor: kotlin.String, isInterface: kotlin.Boolean): kotlin.Any declared in kotlin.jvm.internal' type=kotlin.Any origin=null
+                  tag: CONST Int type=kotlin.Int value=6
+                  owner: CONST String type=kotlin.String value="java/lang/invoke/LambdaMetafactory"
+                  name: CONST String type=kotlin.String value="metafactory"
+                  descriptor: CONST String type=kotlin.String value="(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/CallSite;"
+                  isInterface: CONST Boolean type=kotlin.Boolean value=false
+                bootstrapMethodArguments: VARARG type=kotlin.Array<kotlin.Any> varargElementType=kotlin.Any
+                  CALL 'public final fun <jvm-original-method-type> (method: kotlin.Any): kotlin.Any declared in kotlin.jvm.internal' type=kotlin.Any origin=null
+                    method: RAW_FUNCTION_REFERENCE 'public abstract fun invoke (p1: P1 of kotlin.Function1): R of kotlin.Function1 [operator] declared in kotlin.Function1' type=kotlin.Any
+                  RAW_FUNCTION_REFERENCE 'private final fun onViewCreated$lambda$2 (this$0: com.example.tpv.ParrillaFragment, familias: @[FlexibleNullability] kotlin.collections.List<com.example.tpv.data.model.FamiliaProducto>?): kotlin.Unit? declared in com.example.tpv.ParrillaFragment' type=kotlin.Any
+                  CALL 'public final fun <jvm-original-method-type> (method: kotlin.Any): kotlin.Any declared in kotlin.jvm.internal' type=kotlin.Any origin=null
+                    method: RAW_FUNCTION_REFERENCE 'public abstract fun invoke (p1: @[FlexibleNullability] kotlin.collections.List<com.example.tpv.data.model.FamiliaProducto>?): kotlin.Unit? [fake_override,operator] declared in kotlin.jvm.internal.invokeDynamic.<fake>' type=kotlin.Any
+        CONSTRUCTOR_CALL 'public/*package*/ constructor <init> (function: @[RawType] kotlin.Function1<P1 of kotlin.Function1, R of kotlin.Function1>) [primary] declared in com.example.tpv.ParrillaFragment.sam$androidx_lifecycle_Observer$0' type=com.example.tpv.ParrillaFragment.sam$androidx_lifecycle_Observer$0 origin=null
+          function: GET_VAR 'val tmp: kotlin.Function1<kotlin.Any?, kotlin.Unit> [val] declared in com.example.tpv.ParrillaFragment.onViewCreated' type=kotlin.Function1<kotlin.Any?, kotlin.Unit> origin=null
+    CALL 'public open fun observe (p0: @[EnhancedNullability] androidx.lifecycle.LifecycleOwner, p1: @[EnhancedNullability] androidx.lifecycle.Observer<in @[FlexibleNullability] T of androidx.lifecycle.LiveData?>): kotlin.Unit declared in androidx.lifecycle.LiveData' type=kotlin.Unit origin=null
+      $this: CALL 'public final fun <get-productosPorMesa> (): androidx.lifecycle.LiveData<kotlin.collections.MutableMap<kotlin.String, kotlin.collections.MutableList<kotlin.String>>> declared in com.example.tpv.PedidoViewModel' type=androidx.lifecycle.LiveData<kotlin.collections.MutableMap<kotlin.String, kotlin.collections.MutableList<kotlin.String>>> origin=GET_PROPERTY
+        $this: CALL 'private final fun <get-pedidoViewModel> (): com.example.tpv.PedidoViewModel declared in com.example.tpv.ParrillaFragment' type=com.example.tpv.PedidoViewModel origin=GET_PROPERTY
+          $this: GET_VAR '<this>: com.example.tpv.ParrillaFragment declared in com.example.tpv.ParrillaFragment.onViewCreated' type=com.example.tpv.ParrillaFragment origin=null
+      p0: CALL 'public open fun getViewLifecycleOwner (): @[EnhancedNullability] androidx.lifecycle.LifecycleOwner [fake_override] declared in com.example.tpv.ParrillaFragment' type=@[EnhancedNullability] androidx.lifecycle.LifecycleOwner origin=GET_PROPERTY
+        $this: GET_VAR '<this>: com.example.tpv.ParrillaFragment declared in com.example.tpv.ParrillaFragment.onViewCreated' type=com.example.tpv.ParrillaFragment origin=null
+      p1: BLOCK type=@[RawType] androidx.lifecycle.Observer<T of androidx.lifecycle.Observer> origin=null
+        VAR IR_TEMPORARY_VARIABLE name:tmp type:kotlin.Function1<kotlin.Any?, kotlin.Unit> [val]
+          TYPE_OP type=kotlin.Function1<kotlin.Any?, kotlin.Unit> origin=IMPLICIT_CAST typeOperand=kotlin.Function1<kotlin.Any?, kotlin.Unit>
+            BLOCK type=kotlin.Function1<@[FlexibleNullability] kotlin.collections.MutableMap<kotlin.String, kotlin.collections.MutableList<kotlin.String>>?, kotlin.Unit> origin=LAMBDA
+              COMPOSITE type=kotlin.Unit origin=null
+              CALL 'public final fun <jvm-indy> <T> (dynamicCall: T of kotlin.jvm.internal.<jvm-indy>, bootstrapMethodHandle: kotlin.Any, vararg bootstrapMethodArguments: kotlin.Any): T of kotlin.jvm.internal.<jvm-indy> declared in kotlin.jvm.internal' type=kotlin.Function1<@[FlexibleNullability] kotlin.collections.MutableMap<kotlin.String, kotlin.collections.MutableList<kotlin.String>>?, kotlin.Unit> origin=null
+                <T>: kotlin.Function1<@[FlexibleNullability] kotlin.collections.MutableMap<kotlin.String, kotlin.collections.MutableList<kotlin.String>>?, kotlin.Unit>
+                dynamicCall: CALL 'public final fun invoke (p0: com.example.tpv.ParrillaFragment): kotlin.Function1<@[FlexibleNullability] kotlin.collections.MutableMap<kotlin.String, kotlin.collections.MutableList<kotlin.String>>?, kotlin.Unit> declared in kotlin.jvm.internal.invokeDynamic' type=kotlin.Function1<@[FlexibleNullability] kotlin.collections.MutableMap<kotlin.String, kotlin.collections.MutableList<kotlin.String>>?, kotlin.Unit> origin=null
+                  p0: GET_VAR '<this>: com.example.tpv.ParrillaFragment declared in com.example.tpv.ParrillaFragment.onViewCreated' type=com.example.tpv.ParrillaFragment origin=null
+                bootstrapMethodHandle: CALL 'public final fun <jvm-method-handle> (tag: kotlin.Int, owner: kotlin.String, name: kotlin.String, descriptor: kotlin.String, isInterface: kotlin.Boolean): kotlin.Any declared in kotlin.jvm.internal' type=kotlin.Any origin=null
+                  tag: CONST Int type=kotlin.Int value=6
+                  owner: CONST String type=kotlin.String value="java/lang/invoke/LambdaMetafactory"
+                  name: CONST String type=kotlin.String value="metafactory"
+                  descriptor: CONST String type=kotlin.String value="(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/CallSite;"
+                  isInterface: CONST Boolean type=kotlin.Boolean value=false
+                bootstrapMethodArguments: VARARG type=kotlin.Array<kotlin.Any> varargElementType=kotlin.Any
+                  CALL 'public final fun <jvm-original-method-type> (method: kotlin.Any): kotlin.Any declared in kotlin.jvm.internal' type=kotlin.Any origin=null
+                    method: RAW_FUNCTION_REFERENCE 'public abstract fun invoke (p1: P1 of kotlin.Function1): R of kotlin.Function1 [operator] declared in kotlin.Function1' type=kotlin.Any
+                  RAW_FUNCTION_REFERENCE 'private final fun onViewCreated$lambda$3 (this$0: com.example.tpv.ParrillaFragment, it: @[FlexibleNullability] kotlin.collections.MutableMap<kotlin.String, kotlin.collections.MutableList<kotlin.String>>?): kotlin.Unit? declared in com.example.tpv.ParrillaFragment' type=kotlin.Any
+                  CALL 'public final fun <jvm-original-method-type> (method: kotlin.Any): kotlin.Any declared in kotlin.jvm.internal' type=kotlin.Any origin=null
+                    method: RAW_FUNCTION_REFERENCE 'public abstract fun invoke (p1: @[FlexibleNullability] kotlin.collections.MutableMap<kotlin.String, kotlin.collections.MutableList<kotlin.String>>?): kotlin.Unit? [fake_override,operator] declared in kotlin.jvm.internal.invokeDynamic.<fake>' type=kotlin.Any
+        CONSTRUCTOR_CALL 'public/*package*/ constructor <init> (function: @[RawType] kotlin.Function1<P1 of kotlin.Function1, R of kotlin.Function1>) [primary] declared in com.example.tpv.ParrillaFragment.sam$androidx_lifecycle_Observer$0' type=com.example.tpv.ParrillaFragment.sam$androidx_lifecycle_Observer$0 origin=null
+          function: GET_VAR 'val tmp: kotlin.Function1<kotlin.Any?, kotlin.Unit> [val] declared in com.example.tpv.ParrillaFragment.onViewCreated' type=kotlin.Function1<kotlin.Any?, kotlin.Unit> origin=null
+    CALL 'public open fun observe (p0: @[EnhancedNullability] androidx.lifecycle.LifecycleOwner, p1: @[EnhancedNullability] androidx.lifecycle.Observer<in @[FlexibleNullability] T of androidx.lifecycle.LiveData?>): kotlin.Unit declared in androidx.lifecycle.LiveData' type=kotlin.Unit origin=null
+      $this: CALL 'public final fun <get-mesaSeleccionada> (): androidx.lifecycle.LiveData<kotlin.String> declared in com.example.tpv.PedidoViewModel' type=androidx.lifecycle.LiveData<kotlin.String> origin=GET_PROPERTY
+        $this: CALL 'private final fun <get-pedidoViewModel> (): com.example.tpv.PedidoViewModel declared in com.example.tpv.ParrillaFragment' type=com.example.tpv.PedidoViewModel origin=GET_PROPERTY
+          $this: GET_VAR '<this>: com.example.tpv.ParrillaFragment declared in com.example.tpv.ParrillaFragment.onViewCreated' type=com.example.tpv.ParrillaFragment origin=null
+      p0: CALL 'public open fun getViewLifecycleOwner (): @[EnhancedNullability] androidx.lifecycle.LifecycleOwner [fake_override] declared in com.example.tpv.ParrillaFragment' type=@[EnhancedNullability] androidx.lifecycle.LifecycleOwner origin=GET_PROPERTY
+        $this: GET_VAR '<this>: com.example.tpv.ParrillaFragment declared in com.example.tpv.ParrillaFragment.onViewCreated' type=com.example.tpv.ParrillaFragment origin=null
+      p1: BLOCK type=@[RawType] androidx.lifecycle.Observer<T of androidx.lifecycle.Observer> origin=null
+        VAR IR_TEMPORARY_VARIABLE name:tmp type:kotlin.Function1<kotlin.Any?, kotlin.Unit> [val]
+          TYPE_OP type=kotlin.Function1<kotlin.Any?, kotlin.Unit> origin=IMPLICIT_CAST typeOperand=kotlin.Function1<kotlin.Any?, kotlin.Unit>
+            BLOCK type=kotlin.Function1<@[FlexibleNullability] kotlin.String?, kotlin.Unit> origin=LAMBDA
+              COMPOSITE type=kotlin.Unit origin=null
+              CALL 'public final fun <jvm-indy> <T> (dynamicCall: T of kotlin.jvm.internal.<jvm-indy>, bootstrapMethodHandle: kotlin.Any, vararg bootstrapMethodArguments: kotlin.Any): T of kotlin.jvm.internal.<jvm-indy> declared in kotlin.jvm.internal' type=kotlin.Function1<@[FlexibleNullability] kotlin.String?, kotlin.Unit> origin=null
+                <T>: kotlin.Function1<@[FlexibleNullability] kotlin.String?, kotlin.Unit>
+                dynamicCall: CALL 'public final fun invoke (p0: com.example.tpv.ParrillaFragment, p1: android.view.View): kotlin.Function1<@[FlexibleNullability] kotlin.String?, kotlin.Unit> declared in kotlin.jvm.internal.invokeDynamic' type=kotlin.Function1<@[FlexibleNullability] kotlin.String?, kotlin.Unit> origin=null
+                  p0: GET_VAR '<this>: com.example.tpv.ParrillaFragment declared in com.example.tpv.ParrillaFragment.onViewCreated' type=com.example.tpv.ParrillaFragment origin=null
+                  p1: GET_VAR 'view: android.view.View declared in com.example.tpv.ParrillaFragment.onViewCreated' type=android.view.View origin=null
+                bootstrapMethodHandle: CALL 'public final fun <jvm-method-handle> (tag: kotlin.Int, owner: kotlin.String, name: kotlin.String, descriptor: kotlin.String, isInterface: kotlin.Boolean): kotlin.Any declared in kotlin.jvm.internal' type=kotlin.Any origin=null
+                  tag: CONST Int type=kotlin.Int value=6
+                  owner: CONST String type=kotlin.String value="java/lang/invoke/LambdaMetafactory"
+                  name: CONST String type=kotlin.String value="metafactory"
+                  descriptor: CONST String type=kotlin.String value="(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/CallSite;"
+                  isInterface: CONST Boolean type=kotlin.Boolean value=false
+                bootstrapMethodArguments: VARARG type=kotlin.Array<kotlin.Any> varargElementType=kotlin.Any
+                  CALL 'public final fun <jvm-original-method-type> (method: kotlin.Any): kotlin.Any declared in kotlin.jvm.internal' type=kotlin.Any origin=null
+                    method: RAW_FUNCTION_REFERENCE 'public abstract fun invoke (p1: P1 of kotlin.Function1): R of kotlin.Function1 [operator] declared in kotlin.Function1' type=kotlin.Any
+                  RAW_FUNCTION_REFERENCE 'private final fun onViewCreated$lambda$4 (this$0: com.example.tpv.ParrillaFragment, $view: android.view.View, mesa: @[FlexibleNullability] kotlin.String?): kotlin.Unit? declared in com.example.tpv.ParrillaFragment' type=kotlin.Any
+                  CALL 'public final fun <jvm-original-method-type> (method: kotlin.Any): kotlin.Any declared in kotlin.jvm.internal' type=kotlin.Any origin=null
+                    method: RAW_FUNCTION_REFERENCE 'public abstract fun invoke (p1: @[FlexibleNullability] kotlin.String?): kotlin.Unit? [fake_override,operator] declared in kotlin.jvm.internal.invokeDynamic.<fake>' type=kotlin.Any
+        CONSTRUCTOR_CALL 'public/*package*/ constructor <init> (function: @[RawType] kotlin.Function1<P1 of kotlin.Function1, R of kotlin.Function1>) [primary] declared in com.example.tpv.ParrillaFragment.sam$androidx_lifecycle_Observer$0' type=com.example.tpv.ParrillaFragment.sam$androidx_lifecycle_Observer$0 origin=null
+          function: GET_VAR 'val tmp: kotlin.Function1<kotlin.Any?, kotlin.Unit> [val] declared in com.example.tpv.ParrillaFragment.onViewCreated' type=kotlin.Function1<kotlin.Any?, kotlin.Unit> origin=null
+    VAR name:btnPendiente type:@[FlexibleNullability] android.widget.Button? [val]
+      CALL 'public final fun findViewById <T> (p0: kotlin.Int): @[FlexibleNullability] T of android.view.View.findViewById? declared in android.view.View' type=@[FlexibleNullability] android.widget.Button? origin=null
+        <T>: @[FlexibleNullability] android.widget.Button?
+        $this: GET_VAR 'view: android.view.View declared in com.example.tpv.ParrillaFragment.onViewCreated' type=android.view.View origin=null
+        p0: GET_FIELD 'FIELD IR_EXTERNAL_JAVA_DECLARATION_STUB name:btnPendiente type:kotlin.Int visibility:public [static] declared in com.example.tpv.R.id' type=kotlin.Int superQualifierSymbol=com.example.tpv.R.id origin=null
+    CALL 'public open fun setOnClickListener (p0: @[EnhancedNullability] android.view.View.OnClickListener?): kotlin.Unit [fake_override] declared in android.widget.Button' type=kotlin.Unit origin=null
+      $this: GET_VAR 'val btnPendiente: @[FlexibleNullability] android.widget.Button? [val] declared in com.example.tpv.ParrillaFragment.onViewCreated' type=@[FlexibleNullability] android.widget.Button? origin=null
+      p0: BLOCK type=android.view.View.OnClickListener origin=LAMBDA
+        COMPOSITE type=kotlin.Unit origin=null
+        CALL 'public final fun <jvm-indy> <T> (dynamicCall: T of kotlin.jvm.internal.<jvm-indy>, bootstrapMethodHandle: kotlin.Any, vararg bootstrapMethodArguments: kotlin.Any): T of kotlin.jvm.internal.<jvm-indy> declared in kotlin.jvm.internal' type=android.view.View.OnClickListener origin=null
+          <T>: android.view.View.OnClickListener
+          dynamicCall: CALL 'public final fun onClick (p0: com.example.tpv.ParrillaFragment): android.view.View.OnClickListener declared in kotlin.jvm.internal.invokeDynamic' type=android.view.View.OnClickListener origin=null
+            p0: GET_VAR '<this>: com.example.tpv.ParrillaFragment declared in com.example.tpv.ParrillaFragment.onViewCreated' type=com.example.tpv.ParrillaFragment origin=null
+          bootstrapMethodHandle: CALL 'public final fun <jvm-method-handle> (tag: kotlin.Int, owner: kotlin.String, name: kotlin.String, descriptor: kotlin.String, isInterface: kotlin.Boolean): kotlin.Any declared in kotlin.jvm.internal' type=kotlin.Any origin=null
+            tag: CONST Int type=kotlin.Int value=6
+            owner: CONST String type=kotlin.String value="java/lang/invoke/LambdaMetafactory"
+            name: CONST String type=kotlin.String value="metafactory"
+            descriptor: CONST String type=kotlin.String value="(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/CallSite;"
+            isInterface: CONST Boolean type=kotlin.Boolean value=false
+          bootstrapMethodArguments: VARARG type=kotlin.Array<kotlin.Any> varargElementType=kotlin.Any
+            CALL 'public final fun <jvm-original-method-type> (method: kotlin.Any): kotlin.Any declared in kotlin.jvm.internal' type=kotlin.Any origin=null
+              method: RAW_FUNCTION_REFERENCE 'public abstract fun onClick (p0: @[FlexibleNullability] android.view.View?): kotlin.Unit declared in android.view.View.OnClickListener' type=kotlin.Any
+            RAW_FUNCTION_REFERENCE 'private final fun onViewCreated$lambda$5 (this$0: com.example.tpv.ParrillaFragment, it: @[FlexibleNullability] android.view.View?): kotlin.Unit declared in com.example.tpv.ParrillaFragment' type=kotlin.Any
+            CALL 'public final fun <jvm-original-method-type> (method: kotlin.Any): kotlin.Any declared in kotlin.jvm.internal' type=kotlin.Any origin=null
+              method: RAW_FUNCTION_REFERENCE 'public abstract fun onClick (p0: @[FlexibleNullability] android.view.View?): kotlin.Unit [fake_override] declared in kotlin.jvm.internal.invokeDynamic.<fake>' type=kotlin.Any
+    VAR name:btnImprimir type:@[FlexibleNullability] android.widget.Button? [val]
+      CALL 'public final fun findViewById <T> (p0: kotlin.Int): @[FlexibleNullability] T of android.view.View.findViewById? declared in android.view.View' type=@[FlexibleNullability] android.widget.Button? origin=null
+        <T>: @[FlexibleNullability] android.widget.Button?
+        $this: GET_VAR 'view: android.view.View declared in com.example.tpv.ParrillaFragment.onViewCreated' type=android.view.View origin=null
+        p0: GET_FIELD 'FIELD IR_EXTERNAL_JAVA_DECLARATION_STUB name:btnImprimir type:kotlin.Int visibility:public [static] declared in com.example.tpv.R.id' type=kotlin.Int superQualifierSymbol=com.example.tpv.R.id origin=null
+    CALL 'public open fun setOnClickListener (p0: @[EnhancedNullability] android.view.View.OnClickListener?): kotlin.Unit [fake_override] declared in android.widget.Button' type=kotlin.Unit origin=null
+      $this: GET_VAR 'val btnImprimir: @[FlexibleNullability] android.widget.Button? [val] declared in com.example.tpv.ParrillaFragment.onViewCreated' type=@[FlexibleNullability] android.widget.Button? origin=null
+      p0: BLOCK type=android.view.View.OnClickListener origin=LAMBDA
+        COMPOSITE type=kotlin.Unit origin=null
+        CALL 'public final fun <jvm-indy> <T> (dynamicCall: T of kotlin.jvm.internal.<jvm-indy>, bootstrapMethodHandle: kotlin.Any, vararg bootstrapMethodArguments: kotlin.Any): T of kotlin.jvm.internal.<jvm-indy> declared in kotlin.jvm.internal' type=android.view.View.OnClickListener origin=null
+          <T>: android.view.View.OnClickListener
+          dynamicCall: CALL 'public final fun onClick (p0: com.example.tpv.ParrillaFragment): android.view.View.OnClickListener declared in kotlin.jvm.internal.invokeDynamic' type=android.view.View.OnClickListener origin=null
+            p0: GET_VAR '<this>: com.example.tpv.ParrillaFragment declared in com.example.tpv.ParrillaFragment.onViewCreated' type=com.example.tpv.ParrillaFragment origin=null
+          bootstrapMethodHandle: CALL 'public final fun <jvm-method-handle> (tag: kotlin.Int, owner: kotlin.String, name: kotlin.String, descriptor: kotlin.String, isInterface: kotlin.Boolean): kotlin.Any declared in kotlin.jvm.internal' type=kotlin.Any origin=null
+            tag: CONST Int type=kotlin.Int value=6
+            owner: CONST String type=kotlin.String value="java/lang/invoke/LambdaMetafactory"
+            name: CONST String type=kotlin.String value="metafactory"
+            descriptor: CONST String type=kotlin.String value="(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/CallSite;"
+            isInterface: CONST Boolean type=kotlin.Boolean value=false
+          bootstrapMethodArguments: VARARG type=kotlin.Array<kotlin.Any> varargElementType=kotlin.Any
+            CALL 'public final fun <jvm-original-method-type> (method: kotlin.Any): kotlin.Any declared in kotlin.jvm.internal' type=kotlin.Any origin=null
+              method: RAW_FUNCTION_REFERENCE 'public abstract fun onClick (p0: @[FlexibleNullability] android.view.View?): kotlin.Unit declared in android.view.View.OnClickListener' type=kotlin.Any
+            RAW_FUNCTION_REFERENCE 'private final fun onViewCreated$lambda$6 (this$0: com.example.tpv.ParrillaFragment, it: @[FlexibleNullability] android.view.View?): kotlin.Unit declared in com.example.tpv.ParrillaFragment' type=kotlin.Any
+            CALL 'public final fun <jvm-original-method-type> (method: kotlin.Any): kotlin.Any declared in kotlin.jvm.internal' type=kotlin.Any origin=null
+              method: RAW_FUNCTION_REFERENCE 'public abstract fun onClick (p0: @[FlexibleNullability] android.view.View?): kotlin.Unit [fake_override] declared in kotlin.jvm.internal.invokeDynamic.<fake>' type=kotlin.Any
+    VAR name:btnCobrar type:@[FlexibleNullability] android.widget.Button? [val]
+      CALL 'public final fun findViewById <T> (p0: kotlin.Int): @[FlexibleNullability] T of android.view.View.findViewById? declared in android.view.View' type=@[FlexibleNullability] android.widget.Button? origin=null
+        <T>: @[FlexibleNullability] android.widget.Button?
+        $this: GET_VAR 'view: android.view.View declared in com.example.tpv.ParrillaFragment.onViewCreated' type=android.view.View origin=null
+        p0: GET_FIELD 'FIELD IR_EXTERNAL_JAVA_DECLARATION_STUB name:btnCobrar type:kotlin.Int visibility:public [static] declared in com.example.tpv.R.id' type=kotlin.Int superQualifierSymbol=com.example.tpv.R.id origin=null
+    CALL 'public open fun setOnClickListener (p0: @[EnhancedNullability] android.view.View.OnClickListener?): kotlin.Unit [fake_override] declared in android.widget.Button' type=kotlin.Unit origin=null
+      $this: GET_VAR 'val btnCobrar: @[FlexibleNullability] android.widget.Button? [val] declared in com.example.tpv.ParrillaFragment.onViewCreated' type=@[FlexibleNullability] android.widget.Button? origin=null
+      p0: BLOCK type=android.view.View.OnClickListener origin=LAMBDA
+        COMPOSITE type=kotlin.Unit origin=null
+        CALL 'public final fun <jvm-indy> <T> (dynamicCall: T of kotlin.jvm.internal.<jvm-indy>, bootstrapMethodHandle: kotlin.Any, vararg bootstrapMethodArguments: kotlin.Any): T of kotlin.jvm.internal.<jvm-indy> declared in kotlin.jvm.internal' type=android.view.View.OnClickListener origin=null
+          <T>: android.view.View.OnClickListener
+          dynamicCall: CALL 'public final fun onClick (p0: com.example.tpv.ParrillaFragment, p1: kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?>): android.view.View.OnClickListener declared in kotlin.jvm.internal.invokeDynamic' type=android.view.View.OnClickListener origin=null
+            p0: GET_VAR '<this>: com.example.tpv.ParrillaFragment declared in com.example.tpv.ParrillaFragment.onViewCreated' type=com.example.tpv.ParrillaFragment origin=null
+            p1: GET_VAR 'val terminal: kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> [val] declared in com.example.tpv.ParrillaFragment.onViewCreated' type=kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?> origin=null
+          bootstrapMethodHandle: CALL 'public final fun <jvm-method-handle> (tag: kotlin.Int, owner: kotlin.String, name: kotlin.String, descriptor: kotlin.String, isInterface: kotlin.Boolean): kotlin.Any declared in kotlin.jvm.internal' type=kotlin.Any origin=null
+            tag: CONST Int type=kotlin.Int value=6
+            owner: CONST String type=kotlin.String value="java/lang/invoke/LambdaMetafactory"
+            name: CONST String type=kotlin.String value="metafactory"
+            descriptor: CONST String type=kotlin.String value="(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/CallSite;"
+            isInterface: CONST Boolean type=kotlin.Boolean value=false
+          bootstrapMethodArguments: VARARG type=kotlin.Array<kotlin.Any> varargElementType=kotlin.Any
+            CALL 'public final fun <jvm-original-method-type> (method: kotlin.Any): kotlin.Any declared in kotlin.jvm.internal' type=kotlin.Any origin=null
+              method: RAW_FUNCTION_REFERENCE 'public abstract fun onClick (p0: @[FlexibleNullability] android.view.View?): kotlin.Unit declared in android.view.View.OnClickListener' type=kotlin.Any
+            RAW_FUNCTION_REFERENCE 'private final fun onViewCreated$lambda$10 (this$0: com.example.tpv.ParrillaFragment, $terminal: kotlin.jvm.internal.Ref.ObjectRef<es.redsys.paysys.Operative.Managers.RedCLSTerminalData?>, it: @[FlexibleNullability] android.view.View?): kotlin.Unit declared in com.example.tpv.ParrillaFragment' type=kotlin.Any
+            CALL 'public final fun <jvm-original-method-type> (method: kotlin.Any): kotlin.Any declared in kotlin.jvm.internal' type=kotlin.Any origin=null
+              method: RAW_FUNCTION_REFERENCE 'public abstract fun onClick (p0: @[FlexibleNullability] android.view.View?): kotlin.Unit [fake_override] declared in kotlin.jvm.internal.invokeDynamic.<fake>' type=kotlin.Any
+
+	at org.jetbrains.kotlin.backend.jvm.codegen.FunctionCodegen.generate(FunctionCodegen.kt:47)
+	at org.jetbrains.kotlin.backend.jvm.codegen.FunctionCodegen.generate$default(FunctionCodegen.kt:40)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ClassCodegen.generateMethodNode(ClassCodegen.kt:406)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ClassCodegen.generateMethod(ClassCodegen.kt:423)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ClassCodegen.generate(ClassCodegen.kt:168)
+	at org.jetbrains.kotlin.backend.jvm.FileCodegen.lower(JvmPhases.kt:39)
+	at org.jetbrains.kotlin.backend.common.phaser.PhaseFactoriesKt.createFilePhase$lambda$4(PhaseFactories.kt:71)
+	at org.jetbrains.kotlin.backend.common.phaser.PhaseBuildersKt$createSimpleNamedCompilerPhase$1.phaseBody(PhaseBuilders.kt:69)
+	at org.jetbrains.kotlin.backend.common.phaser.SimpleNamedCompilerPhase.phaseBody(CompilerPhase.kt:226)
+	at org.jetbrains.kotlin.backend.common.phaser.AbstractNamedCompilerPhase.invoke(CompilerPhase.kt:113)
+	at org.jetbrains.kotlin.backend.common.phaser.PerformByIrFilePhase.invokeSequential(performByIrFile.kt:62)
+	... 44 more
+Caused by: java.lang.RuntimeException: Exception while generating code for:
+FUN INLINE_LAMBDA name:onViewCreated$lambda$0 visibility:private modality:FINAL <> ($receiver:es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransPetNuevoTerminal) returnType:kotlin.Unit
+  $receiver: VALUE_PARAMETER name:$this$apply type:es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransPetNuevoTerminal
+  BLOCK_BODY
+    VAR name:$i$a$-apply-ParrillaFragment$onViewCreated$nuevoTerminal$1 type:kotlin.Int [val]
+      CONST Int type=kotlin.Int value=0
+    CALL 'public open fun setFuc (p0: @[FlexibleNullability] kotlin.String?): kotlin.Unit declared in es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransPetNuevoTerminal' type=kotlin.Unit origin=EQ
+      $this: GET_VAR '$this$apply: es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransPetNuevoTerminal declared in com.example.tpv.ParrillaFragment.onViewCreated$lambda$0' type=es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransPetNuevoTerminal origin=null
+      p0: CONST String type=kotlin.String value="057678260"
+    CALL 'public open fun setTerminal (p0: kotlin.Int): kotlin.Unit declared in es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransPetNuevoTerminal' type=kotlin.Unit origin=EQ
+      $this: GET_VAR '$this$apply: es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransPetNuevoTerminal declared in com.example.tpv.ParrillaFragment.onViewCreated$lambda$0' type=es.redsys.paysys.clientServicesSSM.logintransparente.RedCLSLoginTransPetNuevoTerminal origin=null
+      p0: CONST Int type=kotlin.Int value=1
+    SET_FIELD 'FIELD IR_EXTERNAL_JAVA_DECLARATION_STUB name:type type:kotlin.Int visibility:public [final,static] declared in android.R.attr' type=kotlin.Unit superQualifierSymbol=android.R.attr origin=EQ
+      value: CONST Int type=kotlin.Int value=2
+
+	at org.jetbrains.kotlin.backend.jvm.codegen.FunctionCodegen.generate(FunctionCodegen.kt:47)
+	at org.jetbrains.kotlin.backend.jvm.codegen.IrSourceCompilerForInline.generateLambdaBody(IrSourceCompilerForInline.kt:67)
+	at org.jetbrains.kotlin.codegen.inline.ExpressionLambda.generateLambdaBody(LambdaInfo.kt:72)
+	at org.jetbrains.kotlin.backend.jvm.codegen.IrInlineCodegen.genValueAndPut(IrInlineCodegen.kt:100)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitCall$handleParameter(ExpressionCodegen.kt:616)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitCall(ExpressionCodegen.kt:644)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitCall(ExpressionCodegen.kt:138)
+	at org.jetbrains.kotlin.ir.expressions.IrCall.accept(IrCall.kt:24)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitVariable(ExpressionCodegen.kt:790)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitVariable(ExpressionCodegen.kt:138)
+	at org.jetbrains.kotlin.ir.declarations.IrVariable.accept(IrVariable.kt:36)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitStatementContainer(ExpressionCodegen.kt:579)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitBlockBody(ExpressionCodegen.kt:584)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitBlockBody(ExpressionCodegen.kt:138)
+	at org.jetbrains.kotlin.ir.expressions.IrBlockBody.accept(IrBlockBody.kt:20)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.generate(ExpressionCodegen.kt:240)
+	at org.jetbrains.kotlin.backend.jvm.codegen.FunctionCodegen.doGenerate(FunctionCodegen.kt:123)
+	at org.jetbrains.kotlin.backend.jvm.codegen.FunctionCodegen.generate(FunctionCodegen.kt:44)
+	... 54 more
+Caused by: java.lang.AssertionError: access of const val: SET_FIELD 'FIELD IR_EXTERNAL_JAVA_DECLARATION_STUB name:type type:kotlin.Int visibility:public [final,static] declared in android.R.attr' type=kotlin.Unit superQualifierSymbol=android.R.attr origin=EQ
+  value: CONST Int type=kotlin.Int value=2
+
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitFieldAccess(ExpressionCodegen.kt:861)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitFieldAccess(ExpressionCodegen.kt:138)
+	at org.jetbrains.kotlin.ir.visitors.IrElementVisitor$DefaultImpls.visitSetField(IrElementVisitor.kt:206)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitSetField(ExpressionCodegen.kt:908)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitSetField(ExpressionCodegen.kt:138)
+	at org.jetbrains.kotlin.ir.expressions.IrSetField.accept(IrSetField.kt:21)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitStatementContainer(ExpressionCodegen.kt:579)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitBlockBody(ExpressionCodegen.kt:584)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitBlockBody(ExpressionCodegen.kt:138)
+	at org.jetbrains.kotlin.ir.expressions.IrBlockBody.accept(IrBlockBody.kt:20)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.generate(ExpressionCodegen.kt:240)
+	at org.jetbrains.kotlin.backend.jvm.codegen.FunctionCodegen.doGenerate(FunctionCodegen.kt:123)
+	at org.jetbrains.kotlin.backend.jvm.codegen.FunctionCodegen.generate(FunctionCodegen.kt:44)
+	... 71 more
+
+

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <!-- Categorías -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="148dp"
+        android:layout_marginTop="12dp"
+        android:fillViewport="true"
+        android:maxHeight="100dp"
+        android:scrollbars="vertical">
+
+        <GridLayout
+            android:id="@+id/layoutCategorias"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="3"
+            android:orientation="horizontal"
+            android:padding="8dp" />
+    </ScrollView>
+
+    <!-- Productos en grid (3 columnas), scroll vertical, altura máxima 30% -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="148dp"
+        android:layout_marginTop="12dp"
+        android:fillViewport="true"
+        android:maxHeight="100dp"
+        android:scrollbars="vertical">
+
+        <GridLayout
+            android:id="@+id/layoutProductos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="3"
+            android:orientation="horizontal"
+            android:padding="8dp" />
+    </ScrollView>
+
+    <!-- Área del ticket -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginTop="12dp"
+        android:background="#f5f5f5"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/textMesa"
+            android:text="@string/mesa_sin_mesa"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:background="#007bff"
+            android:padding="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/textTicket"
+            android:text="Ticket"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textStyle="bold"/>
+
+        <!-- Contenedor donde aparecerán los productos añadidos -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:fillViewport="true"
+            android:padding="4dp"
+            android:background="#f0f0f0">
+
+        <LinearLayout
+            android:id="@+id/layoutTicketItems"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
+
+
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:gravity="end"
+            android:layout_marginTop="8dp">
+
+            <Button
+                android:id="@+id/btnCobrar"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:backgroundTint="#4CAF50"
+                android:text="Cobrar"
+                android:textColor="@android:color/white" />
+
+            <Button
+                android:id="@+id/btnPendiente"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:text="Dejar pendiente" />
+
+            <Button
+                android:id="@+id/btnImprimir"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:text="Imprimir y dejar pendiente" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:gravity="end"
+            android:layout_marginTop="8dp">
+
+            <Button
+                android:id="@+id/btnPropiedades"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Propiedades" />
+
+            <Button
+                android:id="@+id/btnCombinado"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:text="Combinado" />
+
+            <Button
+                android:id="@+id/btnPrimeros"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:text="PRIMEROS" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textTotal"
+            android:text="Total: 0.00 €"
+            android:layout_marginTop="12dp"
+            android:textStyle="bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+</LinearLayout>

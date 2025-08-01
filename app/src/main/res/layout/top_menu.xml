@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#03BFFF"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:padding="8dp">
+
+    <ImageButton
+        android:id="@+id/btnSalas"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@android:color/transparent"
+        android:contentDescription="Home"
+        android:src="@drawable/round_table" />
+
+    <ImageButton
+        android:id="@+id/btnParrilla"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@android:color/transparent"
+        android:contentDescription="Search"
+        android:src="@drawable/parrilla" />
+
+    <ImageButton
+        android:id="@+id/btnSettings"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@android:color/transparent"
+        android:contentDescription="Profile"
+        android:src="@drawable/settings" />
+
+    <ImageButton
+        android:id="@+id/btnDisconnect"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@android:color/transparent"
+        android:contentDescription="Settings"
+        android:src="@drawable/disconnect" />
+</LinearLayout>

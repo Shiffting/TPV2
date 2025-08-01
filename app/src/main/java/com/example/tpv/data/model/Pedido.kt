@@ -1,0 +1,31 @@
+package com.example.tpv.data.model
+
+data class Pedido(
+    val reg: String,
+    val Hora: String,
+    val NombreCam: String,
+    val NombreFormaPago: String,
+    val Fecha: String,
+    val FechaReg: String,
+    val Barra: Int,
+    val Terminal: Int,
+    val Plu: Int,
+    val Producto: String,
+    val Cantidad: String,
+    val Pts: String,
+    val ImpresoCli: Int,
+    val Tarifa: String,
+    val CBarras: String,
+    val PagoPendiente: String,
+    val Comensales: String,
+    val Consumo: String,
+    val IDCLIENTE: String,
+    val NombTerminal: String,
+    val IvaVenta: String,
+    val Iva: String,
+    val TotalReg: String,
+    val incluirConfirmacion: Boolean = false,
+    val Impreso: String,
+    val Familia: String,
+    val PluAdbc: String
+)

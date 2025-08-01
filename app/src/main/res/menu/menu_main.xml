@@ -1,0 +1,27 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.tpv.TPVActivity" >
+
+    <item
+        android:id="@+id/botonMesas"
+        android:icon="@drawable/round_table"
+        android:title="@string/mesas"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/botonParrilla"
+        android:icon="@drawable/parrilla"
+        android:title="@string/parrilla"
+        app:showAsAction="ifRoom|withText"/>
+    <item
+        android:id="@+id/botonAjustes"
+        android:icon="@drawable/settings"
+        android:title="@string/ajustes"
+        app:showAsAction="ifRoom|withText"/>
+    <item
+        android:id="@+id/botonDesconectar"
+        android:icon="@drawable/disconnect"
+        android:title="@string/desconectar"
+        app:showAsAction="ifRoom|withText"/>
+
+</menu>
