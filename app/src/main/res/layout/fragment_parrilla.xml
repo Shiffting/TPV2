@@ -73,17 +73,17 @@
         <!-- Contenedor donde aparecerán los productos añadidos -->
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="120dp"
+            android:background="#f0f0f0"
             android:fillViewport="true"
-            android:padding="4dp"
-            android:background="#f0f0f0">
+            android:padding="4dp">
 
-        <LinearLayout
-            android:id="@+id/layoutTicketItems"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
-    </ScrollView>
+            <LinearLayout
+                android:id="@+id/layoutTicketItems"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </ScrollView>
 
 
 

@@ -50,13 +50,7 @@ class PedidoViewModel : ViewModel() {
         }
         _itemsPorMesa.value = mapa
     }
-    fun quitarItem(item: ItemPedido) {
-        val clave = claveSalaMesa() ?: return
-        val mapa = _itemsPorMesa.value ?: return
-        mapa[clave]?.remove(item)
-        _itemsPorMesa.value = mapa
-    }
-    fun reducirItem(item: ItemPedido) {
+    fun reducirItem(item: ItemPedido, count: Int) {
         val clave = claveSalaMesa() ?: return
         val mapa  = _itemsPorMesa.value ?: return
         val lista = mapa[clave] ?: return
@@ -65,15 +59,14 @@ class PedidoViewModel : ViewModel() {
         val idx = lista.indexOf(item)
         if (idx >= 0) {
             val existente = lista[idx]
-            if (existente.cantidad > 1) {
-                existente.cantidad -= 1
+            if (existente.cantidad > count) {
+                existente.cantidad -= count
             } else {
                 lista.removeAt(idx)
             }
             _itemsPorMesa.value = mapa
         }
     }
-
     fun obtenerItems(mesa: String, sala: String?): List<ItemPedido> {
         if (sala == null) return emptyList()
         return _itemsPorMesa.value?.get("$sala-$mesa") ?: emptyList()
@@ -131,15 +124,6 @@ class PedidoViewModel : ViewModel() {
             _idPedidoPorMesa.value = mapa
         }
         return _idPedidoPorMesa.value?.get(clave)
-    }
-
-    fun cerrarMesa() {
-        val clave = claveSalaMesa() ?: return
-        val mapaIds = _idPedidoPorMesa.value ?: return
-        if (mapaIds.containsKey(clave)) {
-            mapaIds.remove(clave)
-            _idPedidoPorMesa.value = mapaIds
-        }
     }
 
     fun liberarPantallaActual() {

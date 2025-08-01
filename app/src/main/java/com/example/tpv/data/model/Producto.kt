@@ -33,5 +33,5 @@ data class Producto(
     var precioSeleccionado: String? = null,
     val TextoBotonTapa: String,
     val TextoBotonMediaRacion: String,
-    val PluAdbc: String
+    val PluAdbc: Int
 )

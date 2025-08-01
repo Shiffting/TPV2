@@ -10,6 +10,6 @@ data class ItemPedido(
     val consumoSolo: String,
     val impresora: String,
     val ivaVenta: String,
-    val pluadbc: String,
+    val pluadbc: Int,
     var propiedades: MutableList<String> = mutableListOf()
 )

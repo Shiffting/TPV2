@@ -27,5 +27,5 @@ data class Pedido(
     val incluirConfirmacion: Boolean = false,
     val Impreso: String,
     val Familia: String,
-    val PluAdbc: String
+    val PluAdbc: Int
 )

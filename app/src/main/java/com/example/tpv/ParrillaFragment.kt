@@ -27,6 +27,7 @@ import android.view.Gravity
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.GridLayout
+import android.widget.NumberPicker
 import com.example.tpv.data.model.FamiliaProducto
 import com.example.tpv.viewModels.PedidoViewModel
 import com.example.tpv.viewModels.ProductosViewModel
@@ -62,9 +63,10 @@ class ParrillaFragment : Fragment() {
     private lateinit var btnPropiedades:Button
     private lateinit var btnCombinado:Button
     private lateinit var sharedPref: SharedPreferences
-    private var productoSeleccionadoEnTicket: ItemPedido? = null
     private var ultimoItemSeleccionado: ItemPedido? = null
     private val productoOriginalMap = mutableMapOf<Int, Producto>()
+    private var lastKey = ""
+    private var lastItems = emptyList<ItemPedido>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -318,30 +320,23 @@ class ParrillaFragment : Fragment() {
                 }
             }
             .setPositiveButton("OK") { _, _ ->
-                // 4) Al confirmar, reconstruimos nombre y precio
                 // Nombre base + lista de propiedades
-                item.nombre = buildString {
-                    append(item.nombreBase)
-                    if (item.propiedades.isNotEmpty()) {
-                        append(" [")
-                        append(item.propiedades.joinToString(", "))
-                        append("]")
-                    }
-                }
-                // Precio: si no hay props, tarifa base; si hay, suma de tarifas
                 val tarifaBase = producto.Tarifa1.replace(",",".").toDoubleOrNull() ?: 0.0
+                val reemplaza = when {
+                    "Chupito"      in item.propiedades -> producto.Tarifa11.toDouble()
+                    "Combinado"    in item.propiedades -> producto.Tarifa15.toDouble()
+                    producto.TextoBotonTapa        in item.propiedades -> producto.Tarifa13.toDouble()
+                    producto.TextoBotonMediaRacion in item.propiedades -> producto.Tarifa14.toDouble()
+                    else -> null
+                }
                 val extra = item.propiedades.sumOf { prop ->
                     when (prop) {
-                        producto.TextoBotonTapa        ->
-                            productosViewModel.obtenerTarifaPorPlu(item.plu, 13)
-                        producto.TextoBotonMediaRacion ->
-                            productosViewModel.obtenerTarifaPorPlu(item.plu, 14)
-                        "Chupito"    -> productosViewModel.obtenerTarifaPorPlu(item.plu, 11)
-                        "Combinado"  -> productosViewModel.obtenerTarifaPorPlu(item.plu, 15)
+                        // si alguna de tus props API tuviera coste adicional distinto
+                        // de la tarifa base, lo pondrías aquí…
                         else         -> 0.0
                     }
                 }
-                item.precio = if (item.propiedades.isEmpty()) tarifaBase else extra
+                item.precio = (reemplaza ?: tarifaBase) + extra
 
                 // 5) Refrescamos la UI sin ocultar el botón
                 actualizarUIProductos()
@@ -383,11 +378,17 @@ class ParrillaFragment : Fragment() {
                         else View.INVISIBLE
                 }
                 setOnLongClickListener {
-                    AlertDialog.Builder(requireContext())
-                        .setTitle("Eliminar producto")
-                        .setMessage("¿Quieres eliminar una unidad de \"${item.nombre}\" del ticket?")
-                        .setPositiveButton("Sí") { _, _ ->
-                            pedidoViewModel.reducirItem(item)
+                    val picker = NumberPicker(requireContext()).apply {
+                        minValue = 1
+                        maxValue = item.cantidad
+                        value    = 1
+                    }
+                    MaterialAlertDialogBuilder(requireContext())
+                        .setTitle("¿Cuántas unidades borrar?")
+                        .setView(picker)
+                        .setPositiveButton("Borrar") { _, _ ->
+                            val toRemove = picker.value
+                            pedidoViewModel.reducirItem(item, toRemove)
                             RetrofitClient.apiService.borrarPedido(
                                 sharedPref.getString("dbId","cloud")!!,
                                 idPedido,
@@ -395,13 +396,13 @@ class ParrillaFragment : Fragment() {
                             ).enqueue(object: Callback<Void> {
                                 override fun onResponse(call: Call<Void>, response: Response<Void>) {
                                     if (response.isSuccessful) {
-                                        Log.i("API", "✅ Unidad borrada de pedido $idPedido")
+                                        Log.i("API", "✅ Unidad borrada de pedido $idPedido (plu=${item.plu})")
                                     } else {
-                                        Log.e("API", "❌ Error borrando unidad del pedido $idPedido")
+                                        Log.e("API", "❌ Error borrando unidad del pedido $idPedido (plu=${item.plu}) HTTP ${response.code()}")
                                     }
                                 }
                                 override fun onFailure(call: Call<Void>, t: Throwable) {
-                                    Log.e("API", "Fallo al borrar unidad del pedido $idPedido", t)
+                                    Log.e("API", "Fallo al borrar unidad del pedido $idPedido (plu=${item.plu})", t)
                                 }
                             })
                             actualizarUIProductos()
@@ -494,7 +495,7 @@ class ParrillaFragment : Fragment() {
                 Barra = 1,
                 Terminal = 1,
                 Plu = item.plu,
-                Producto = item.nombre,
+                Producto = item.nombreBase,
                 Cantidad = item.cantidad.toString(),
                 Pts = item.precio.toString(),
                 ImpresoCli = 0,
@@ -511,51 +512,79 @@ class ParrillaFragment : Fragment() {
                 TotalReg = total.toString(),
                 incluirConfirmacion = incluirConfirmacion,
                 Familia = item.familia,
-                PluAdbc = item.pluadbc
+                PluAdbc = 0
             )
 
             Log.e("LINEA", "" + linea);
 
-            RetrofitClient.apiService.sincronizarPedido(sharedPref.getString("dbId", "cloud").toString(), idUnicoPedido.toString(), linea).enqueue(object : Callback<Void> {
-                override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                    if (!response.isSuccessful) {
-                        val errorBody = response.errorBody()?.string()
-                        Log.e("API", """
-                            ❌ Error al guardar producto: ${item.nombre}
-                            Código HTTP: ${response.code()}
-                            Respuesta del servidor: $errorBody
-                           """.trimIndent())
+            RetrofitClient.apiService
+                .sincronizarPedido(sharedPref.getString("dbId", "cloud").toString(), idUnicoPedido, linea)
+                .enqueue(logCallback("base", item.plu, idUnicoPedido))
 
-                        try {
-                            val jsonError = JSONObject(errorBody ?: "{}")
-                            val mensajeError = jsonError.optString("error", "Error desconocido")
-                            Log.e("API", "Mensaje de error: $mensajeError")
 
-                            // Mostrar mensaje en UI (por ejemplo Toast)
-                            Toast.makeText(context, mensajeError, Toast.LENGTH_LONG).show()
+            // === 2) Una línea por cada propiedad ===
+            item.propiedades.forEach { prop ->
+                val producto = productosViewModel.productos.value
+                    ?.firstOrNull { it.Plu == item.plu }
 
-                        } catch (e: JSONException) {
-                            // Si no es JSON válido
-                            Log.e("API", "No se pudo parsear el error JSON")
-                            Toast.makeText(context, "Error desconocido del servidor", Toast.LENGTH_LONG).show()
-                        }
-                    } else {
-                        Log.i("API", "✅ Producto guardado correctamente: ${item.nombre}")
-                    }
+                val tarifaProp = when {
+                    // 1) Propiedad “Tapa” para este producto
+                    producto?.TextoBotonTapa == prop ->
+                        productosViewModel.obtenerTarifaPorPlu(item.plu, 13)
+
+                    // 2) Propiedad “Media Ración” para este producto
+                    producto?.TextoBotonMediaRacion == prop ->
+                        productosViewModel.obtenerTarifaPorPlu(item.plu, 14)
+
+                    // 3) Propiedades de API
+                    prop == "Chupito"   -> productosViewModel.obtenerTarifaPorPlu(item.plu, 11)
+                    prop == "Combinado" -> productosViewModel.obtenerTarifaPorPlu(item.plu, 15)
+
+                    // 4) Por defecto, tarifa base
+                    else -> productosViewModel.obtenerTarifaPorPlu(item.plu, 1)
                 }
 
-                override fun onFailure(call: Call<Void>, t: Throwable) {
-                    Log.e("API", "Fallo al enviar producto: ${item.nombre}", t)
-                }
-            })
+                val totalProp = item.cantidad * tarifaProp
+
+                val lineaProp = Pedido(
+                    reg              = idUnicoPedido,
+                    Hora             = horaActual,
+                    NombreCam        = nombreCam,
+                    NombreFormaPago  = salaActual,
+                    Fecha            = fechaActual,
+                    FechaReg         = fechaActual,
+                    Barra            = 1,
+                    Terminal         = 1,
+                    Plu              = 90909090,
+                    Producto         = prop,
+                    Cantidad         = item.cantidad.toString(),
+                    Pts              = tarifaProp.toString(),
+                    ImpresoCli       = 0,
+                    Tarifa           = tarifaProp.toString(),
+                    CBarras          = terminal,
+                    PagoPendiente   = mesaActual,
+                    Comensales       = "1",
+                    Consumo          = item.consumoSolo,
+                    IDCLIENTE        = "0A_VENTA",
+                    Impreso          = item.impresora,
+                    NombTerminal     = nombreLocal,
+                    IvaVenta         = item.ivaVenta,
+                    Iva              = item.ivaVenta,
+                    TotalReg         = totalProp.toString(),
+                    incluirConfirmacion = incluirConfirmacion,
+                    Familia          = item.familia,
+                    PluAdbc          = 90909090
+                )
+
+                RetrofitClient.apiService
+                    .sincronizarPedido(sharedPref.getString("dbId", "cloud").toString(), idUnicoPedido, lineaProp)
+                    .enqueue(logCallback("prop", 90909090, idUnicoPedido))
+            }
         }
-
         limpiarVistaDeTicket()
         pedidoViewModel.liberarPantallaActual()
-
         Toast.makeText(requireContext(), "Productos enviados como pendientes", Toast.LENGTH_SHORT).show()
     }
-
 }
 
 // Extensión de Producto para consultar si admite configuración de props
@@ -565,3 +594,15 @@ private fun Producto.tieneConfiguracion(): Boolean {
     val tieneMedia  = this.TextoBotonMediaRacion != "-"
     return tieneApi || tieneTapa || tieneMedia
 }
+
+// Helper para logging uniformizado
+private fun logCallback(tag: String, plu: Int, reg: String) =
+    object : Callback<Void> {
+        override fun onResponse(call: Call<Void>, response: Response<Void>) {
+            if (response.isSuccessful) Log.i("API", "✅ $tag (plu=$plu) guardado en reg=$reg")
+            else                    Log.e("API", "❌ $tag (plu=$plu) ERROR ${response.code()}")
+        }
+        override fun onFailure(call: Call<Void>, t: Throwable) {
+            Log.e("API", "Fallo $tag (plu=$plu) en reg=$reg", t)
+        }
+    }

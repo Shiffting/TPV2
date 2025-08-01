@@ -73,8 +73,8 @@ interface ApiService {
     @DELETE("pedidos/{reg}/{plu}")
     fun borrarPedido(
         @Header("X-Database-ID") dbId: String,
-        @Path("reg") reg: String,
-        @Path("plu") plu: String
+        @Path("reg")    reg: String,
+        @Path("plu")    plu: String
     ): Call<Void>
 
     @GET("pedidos/pendientes")
