@@ -26,36 +26,19 @@ class PedidoViewModel : ViewModel() {
         val mapa = _itemsPorMesa.value ?: mutableMapOf()
         val lista = mapa.getOrPut(clave) { mutableListOf() }
         // Busca un item “igual” en la lista (producto, precio y mismas propiedades)
-        val existente = lista.find {
-                it.nombre == item.nombre &&
-                it.propiedades == item.propiedades &&
-                it.precio == item.precio }
-        if (existente != null) {
-            // si ya hay uno idéntico: incrementa cantidad
+        val existente = lista.firstOrNull { it.plu == item.plu && it.nombreBase == item.nombreBase }
+        val mergeable = existente != null &&
+                existente.propiedades.isEmpty() &&
+                lista.none { it.esCombinado() && it.nombreBase == existente.nombreBase }
+
+        if (mergeable) {
             existente.cantidad += 1
         } else {
-            // si no, añade como línea nueva
             lista.add(item)
         }
         _itemsPorMesa.value = mapa
     }
-    fun reducirItem(item: ItemPedido, count: Int) {
-        val clave = claveSalaMesa() ?: return
-        val mapa  = _itemsPorMesa.value ?: return
-        val lista = mapa[clave] ?: return
 
-        // Busca ítem idéntico: mismo nombre, precio y propiedades
-        val idx = lista.indexOf(item)
-        if (idx >= 0) {
-            val existente = lista[idx]
-            if (existente.cantidad > count) {
-                existente.cantidad -= count
-            } else {
-                lista.removeAt(idx)
-            }
-            _itemsPorMesa.value = mapa
-        }
-    }
     fun obtenerItems(mesa: String, sala: String?): List<ItemPedido> {
         if (sala == null) return emptyList()
         return _itemsPorMesa.value?.get("$sala-$mesa") ?: emptyList()
@@ -133,7 +116,6 @@ class PedidoViewModel : ViewModel() {
                     val ids  = mutableMapOf<String, String>()
 
                     pedidos.forEach { linea ->
-                        Log.d("PedidoVM", "LINEA → Plu=${linea.Plu}  PluAdbc=${linea.PluAdbc}  Producto='${linea.Producto}'")
                         val clave = "${linea.NombreFormaPago}-${linea.PagoPendiente}"
                         ids[clave] = linea.reg
                         val lista = mapa.getOrPut(clave) { mutableListOf() }
@@ -163,7 +145,6 @@ class PedidoViewModel : ViewModel() {
                             )
                         }
                     }
-
                     _itemsPorMesa.value    = mapa
                     _idPedidoPorMesa.value = ids
                 }
@@ -173,4 +154,21 @@ class PedidoViewModel : ViewModel() {
                 }
             })
     }
+
+    /** Inserta `nuevo` justo después de `base` dentro de la lista de items de esa mesa. */
+    fun insertarItemDespues(base: ItemPedido, nuevo: ItemPedido) {
+        val clave = claveSalaMesa() ?: return
+        val lista = _itemsPorMesa.value?.get(clave)?.toMutableList() ?: return
+
+        // encuentra índice de la base y mete nuevo justo tras él
+        val idx = lista.indexOfFirst { it === base }
+        val pos = if (idx != -1) idx + 1 else lista.size
+        lista.add(pos, nuevo)
+
+        _itemsPorMesa.value = _itemsPorMesa.value!!.toMutableMap().apply {
+            put(clave, lista)
+        }
+    }
 }
+
+private fun ItemPedido.esCombinado(): Boolean = this.pluadbc == 90909090

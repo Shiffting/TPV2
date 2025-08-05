@@ -69,13 +69,6 @@ interface ApiService {
         @Path("reg") reg: String,
         @Body producto: Pedido
     ): Call<Void>
-    @Headers("Content-Type: application/json", "Accept: application/json")
-    @DELETE("pedidos/{reg}/{plu}")
-    fun borrarPedido(
-        @Header("X-Database-ID") dbId: String,
-        @Path("reg")    reg: String,
-        @Path("plu")    plu: Int
-    ): Call<Void>
 
     @GET("pedidos/pendientes")
     fun getPedidosPendientes(
