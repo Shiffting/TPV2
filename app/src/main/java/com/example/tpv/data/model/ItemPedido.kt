@@ -12,5 +12,6 @@ data class ItemPedido(
     val ivaVenta: String,
     val pluadbc: Int,
     var propiedades: MutableList<String> = mutableListOf(),
-    val isHeader: Boolean = false
+    val isHeader: Boolean = false,
+    var tarifaUsada:String = "Tarifa1"
 )

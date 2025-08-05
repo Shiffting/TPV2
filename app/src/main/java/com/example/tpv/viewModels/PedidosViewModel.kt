@@ -23,19 +23,24 @@ class PedidoViewModel : ViewModel() {
 
     fun añadirItem(item: ItemPedido) {
         val clave = claveSalaMesa() ?: return
-        val mapa = _itemsPorMesa.value ?: mutableMapOf()
+        val mapa  = _itemsPorMesa.value ?: mutableMapOf()
         val lista = mapa.getOrPut(clave) { mutableListOf() }
-        // Busca un item “igual” en la lista (producto, precio y mismas propiedades)
-        val existente = lista.firstOrNull { it.plu == item.plu && it.nombreBase == item.nombreBase }
-        val mergeable = existente != null &&
-                existente.propiedades.isEmpty() &&
-                lista.none { it.esCombinado() && it.nombreBase == existente.nombreBase }
+        /* ─── buscamos un hueco válido ─── */
+        val idxValido = lista
+            .withIndex()
+            .indexOfFirst { (idx, it) ->
+                it.plu == item.plu &&
+                        !it.esCombinado() &&
+                        !lista.itemTieneCombinados(idx)
+            }
 
-        if (mergeable) {
-            existente.cantidad += 1
+        if (idxValido >= 0) {
+            lista[idxValido].cantidad++
         } else {
             lista.add(item)
         }
+
+        mapa[clave] = lista
         _itemsPorMesa.value = mapa
     }
 
@@ -104,14 +109,13 @@ class PedidoViewModel : ViewModel() {
     }
 
     fun cargarPedidosPendientesDesdeBD(dbId: String, colorNet: String) {
-        Log.i("PedidoVM", "▶ cargarPedidosPendientesDesdeBD(dbId=$dbId, colorNet=$colorNet) llamada")
         RetrofitClient.apiService.getPedidosPendientes(dbId, colorNet)
             .enqueue(object : Callback<List<Pedido>> {
                 override fun onResponse(call: Call<List<Pedido>>, response: Response<List<Pedido>>) {
                     if (!response.isSuccessful) return
                     val pedidos = response.body() ?: return
 
-                    // LinkedHashMap para mantener orden de inserción
+                    // --- Mantenemos orden de inserción
                     val mapa = linkedMapOf<String, MutableList<ItemPedido>>()
                     val ids  = mutableMapOf<String, String>()
 
@@ -121,30 +125,44 @@ class PedidoViewModel : ViewModel() {
                         val lista = mapa.getOrPut(clave) { mutableListOf() }
 
                         if (linea.PluAdbc == 90909090) {
-                            // Es propiedad: la agrego a la última línea base
-                            if (lista.isNotEmpty()) {
-                                lista.last().propiedades.add(linea.Producto)
-                            }
-                        } else {
-                            // Producto base → creo nuevo ItemPedido
-                            val precio  = linea.Tarifa.replace(",",".").toDoubleOrNull() ?: 0.0
+                            // Las tratamos como un ItemPedido independiente
+                            val precio = linea.Pts.replace(",", ".").toDoubleOrNull() ?: 0.0
                             lista.add(
                                 ItemPedido(
-                                    nombre      = linea.Producto,
-                                    nombreBase  = linea.Producto,
-                                    precio      = precio,
-                                    cantidad    = 1,
-                                    plu         = linea.Plu,
-                                    familia     = linea.Familia,
-                                    consumoSolo = linea.Consumo,
-                                    impresora   = linea.Impreso,
-                                    ivaVenta    = linea.IvaVenta,
-                                    propiedades = mutableListOf(),
-                                    pluadbc = linea.PluAdbc
+                                    nombreBase   = linea.Producto,
+                                    nombre       = linea.Producto,
+                                    precio       = precio,
+                                    cantidad     = linea.Cantidad.toIntOrNull() ?: 1,
+                                    plu          = linea.Plu,
+                                    familia      = linea.Familia,
+                                    consumoSolo  = linea.Consumo,
+                                    impresora    = linea.Impreso,
+                                    ivaVenta     = linea.IvaVenta,
+                                    pluadbc      = 90909090,
+                                    propiedades  = mutableListOf()
                                 )
                             )
+                            return@forEach
                         }
+
+                        val precioBase = linea.Pts.replace(",", ".").toDoubleOrNull() ?: 0.0
+                        lista.add(
+                            ItemPedido(
+                                nombreBase   = linea.Producto,
+                                nombre       = linea.Producto,
+                                precio       = precioBase,
+                                cantidad     = linea.Cantidad.toIntOrNull() ?: 1,
+                                plu          = linea.Plu,
+                                familia      = linea.Familia,
+                                consumoSolo  = linea.Consumo,
+                                impresora    = linea.Impreso,
+                                ivaVenta     = linea.IvaVenta,
+                                pluadbc      = 0,
+                                propiedades  = mutableListOf()
+                            )
+                        )
                     }
+
                     _itemsPorMesa.value    = mapa
                     _idPedidoPorMesa.value = ids
                 }
@@ -154,6 +172,7 @@ class PedidoViewModel : ViewModel() {
                 }
             })
     }
+
 
     /** Inserta `nuevo` justo después de `base` dentro de la lista de items de esa mesa. */
     fun insertarItemDespues(base: ItemPedido, nuevo: ItemPedido) {
@@ -172,3 +191,11 @@ class PedidoViewModel : ViewModel() {
 }
 
 private fun ItemPedido.esCombinado(): Boolean = this.pluadbc == 90909090
+
+/** Devuelve true si inmediatamente después hay al menos un combinado */
+fun MutableList<ItemPedido>.itemTieneCombinados(idx: Int): Boolean {
+    if (idx !in indices) return false
+    var j = idx + 1
+    while (j < size && this[j].esCombinado()) return true
+    return false
+}

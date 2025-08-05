@@ -277,6 +277,7 @@ class ParrillaFragment : Fragment() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun mostrarProductosDeFamilia(nombreFamilia: String) {
         Log.d("producto", productosViewModel.productos.value.toString())
         val productos = productosViewModel.productos.value
@@ -323,7 +324,8 @@ class ParrillaFragment : Fragment() {
                             impresora    = producto.Impresora,
                             ivaVenta     = producto.IvaVenta,
                             pluadbc      = 90909090,
-                            propiedades  = mutableListOf()
+                            propiedades  = mutableListOf(),
+                            tarifaUsada = "Tarifa15"
                         )
 
                         // Insertamos justo después del base:
@@ -341,7 +343,8 @@ class ParrillaFragment : Fragment() {
                             impresora   = producto.Impresora,
                             ivaVenta    = producto.IvaVenta,
                             pluadbc = producto.PluAdbc,
-                            propiedades  = mutableListOf()
+                            propiedades  = mutableListOf(),
+                            tarifaUsada = "Tarifa1"
                         )
                         pedidoViewModel.añadirItem(item)
                         ultimoItemSeleccionado = item
@@ -418,13 +421,14 @@ class ParrillaFragment : Fragment() {
             .setPositiveButton("OK") { _, _ ->
                 // Nombre base + lista de propiedades
                 val tarifaBase = producto.Tarifa1.replace(",",".").toDoubleOrNull() ?: 0.0
-                val reemplaza = when {
-                    "Chupito"      in item.propiedades -> producto.Tarifa11.toDouble()
-                    "Combinado"    in item.propiedades -> producto.Tarifa15.toDouble()
-                    producto.TextoBotonTapa        in item.propiedades -> producto.Tarifa13.toDouble()
-                    producto.TextoBotonMediaRacion in item.propiedades -> producto.Tarifa14.toDouble()
-                    else -> null
+                val (nuevoPrecio, nuevaTarifaNombre) = when {
+                    "Chupito"      in item.propiedades -> producto.Tarifa11.toDouble() to "Tarifa11"
+                    "Combinado"    in item.propiedades -> producto.Tarifa15.toDouble() to "Tarifa15"
+                    producto.TextoBotonTapa        in item.propiedades -> producto.Tarifa13.toDouble() to "Tarifa13"
+                    producto.TextoBotonMediaRacion in item.propiedades -> producto.Tarifa14.toDouble() to "Tarifa14"
+                    else -> tarifaBase to item.tarifaUsada
                 }
+
                 val extra = item.propiedades.sumOf { prop ->
                     when (prop) {
                         // si alguna de tus props API tuviera coste adicional distinto
@@ -432,7 +436,8 @@ class ParrillaFragment : Fragment() {
                         else         -> 0.0
                     }
                 }
-                item.precio = (reemplaza ?: tarifaBase) + extra
+                item.precio = nuevoPrecio + extra
+                item.tarifaUsada = nuevaTarifaNombre
 
                 // 5) Refrescamos la UI sin ocultar el botón
                 actualizarUIProductos()
@@ -500,10 +505,10 @@ class ParrillaFragment : Fragment() {
                 Terminal = 1,
                 Plu = item.plu,
                 Producto = item.nombre,
-                Cantidad = item.cantidad.toString(),
+                Cantidad = if (item.esCombinado()) "0" else item.cantidad.toString(),
                 Pts = item.precio.toString(),
                 ImpresoCli = 0,
-                Tarifa = item.precio.toString(),
+                Tarifa = item.tarifaUsada,
                 CBarras = terminal,
                 PagoPendiente = mesaActual,
                 Comensales = "1",
@@ -516,7 +521,7 @@ class ParrillaFragment : Fragment() {
                 TotalReg = total.toString(),
                 incluirConfirmacion = incluirConfirmacion,
                 Familia = item.familia,
-                PluAdbc = 0
+                PluAdbc = item.pluadbc
             )
 
             Log.e("LINEA", "" + linea);
@@ -525,74 +530,75 @@ class ParrillaFragment : Fragment() {
 
 
             // === 2) Una línea por cada propiedad ===
-            item.propiedades.forEach { prop ->
-                val producto = productosViewModel.productos.value
-                    ?.firstOrNull { it.Plu == item.plu }
+            if (!item.esCombinado()) {
+                item.propiedades.forEach { prop ->
+                    val producto = productosViewModel.productos.value
+                        ?.firstOrNull { it.Plu == item.plu }
 
-                var propname = when {
-                    // 1) Propiedad “Tapa” para este producto
-                    producto?.TextoBotonTapa == prop -> {
-                        "_" + producto.TextoBotonTapa
+                    var propname = when {
+                        // 1) Propiedad “Tapa” para este producto
+                        producto?.TextoBotonTapa == prop -> {
+                            "_" + producto.TextoBotonTapa
+                        }
+
+                        // 2) Propiedad “Media Ración” para este producto
+                        producto?.TextoBotonMediaRacion == prop -> {
+                            "_" + producto.TextoBotonMediaRacion
+                        }
+
+                        // 3) Propiedades de API
+                        prop == "Chupito"   -> {
+                            "_Chup"
+                        }
+                        prop == "Combinado" -> {
+                            "_Cb"
+                        }
+
+                        // 4) Por defecto, tarifa base
+                        else -> {
+                            "_Pro"
+                        }
                     }
 
-                    // 2) Propiedad “Media Ración” para este producto
-                    producto?.TextoBotonMediaRacion == prop -> {
-                        "_" + producto.TextoBotonMediaRacion
+                    propname = if (prop.endsWith(propname)) {
+                        prop
+                    } else {
+                        prop + propname
                     }
+                    item.nombre = propname
 
-                    // 3) Propiedades de API
-                    prop == "Chupito"   -> {
-                        "_Chup"
-                    }
-                    prop == "Combinado" -> {
-                        "_Cb"
-                    }
+                    val lineaProp = Pedido(
+                        reg              = idUnicoPedido,
+                        Hora             = horaActual,
+                        NombreCam        = nombreCam,
+                        NombreFormaPago  = salaActual,
+                        Fecha            = fechaActual,
+                        FechaReg         = fechaActual,
+                        Barra            = 1,
+                        Terminal         = 1,
+                        Plu              = item.plu,
+                        Producto         = item.nombre,
+                        Cantidad         = "0",
+                        Pts              = "0",
+                        ImpresoCli       = 0,
+                        Tarifa           = "0",
+                        CBarras          = terminal,
+                        PagoPendiente   = mesaActual,
+                        Comensales       = "1",
+                        Consumo          = item.consumoSolo,
+                        IDCLIENTE        = "0A_VENTA",
+                        Impreso          = item.impresora,
+                        NombTerminal     = nombreLocal,
+                        IvaVenta         = item.ivaVenta,
+                        Iva              = item.ivaVenta,
+                        TotalReg         = "0",
+                        incluirConfirmacion = incluirConfirmacion,
+                        Familia          = item.familia,
+                        PluAdbc          = 90909090
+                    )
 
-                    // 4) Por defecto, tarifa base
-                    else -> {
-                        "_Pro"
-                    }
+                    lineas += lineaProp
                 }
-
-                propname = if (prop.endsWith(propname)) {
-                    prop
-                } else {
-                    prop + propname
-                }
-                item.nombre = propname
-
-
-                val lineaProp = Pedido(
-                    reg              = idUnicoPedido,
-                    Hora             = horaActual,
-                    NombreCam        = nombreCam,
-                    NombreFormaPago  = salaActual,
-                    Fecha            = fechaActual,
-                    FechaReg         = fechaActual,
-                    Barra            = 1,
-                    Terminal         = 1,
-                    Plu              = item.plu,
-                    Producto         = item.nombre,
-                    Cantidad         = "0",
-                    Pts              = "0",
-                    ImpresoCli       = 0,
-                    Tarifa           = "0",
-                    CBarras          = terminal,
-                    PagoPendiente   = mesaActual,
-                    Comensales       = "1",
-                    Consumo          = item.consumoSolo,
-                    IDCLIENTE        = "0A_VENTA",
-                    Impreso          = item.impresora,
-                    NombTerminal     = nombreLocal,
-                    IvaVenta         = item.ivaVenta,
-                    Iva              = item.ivaVenta,
-                    TotalReg         = "0",
-                    incluirConfirmacion = incluirConfirmacion,
-                    Familia          = item.familia,
-                    PluAdbc          = 90909090
-                )
-
-                lineas += lineaProp
             }
         }
         enviarLineasEnSerie(sharedPref.getString("dbId","cloud")!!, idUnicoPedido, lineas)
