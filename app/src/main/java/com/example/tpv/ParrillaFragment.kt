@@ -325,12 +325,12 @@ class ParrillaFragment : Fragment() {
                             ivaVenta     = producto.IvaVenta,
                             pluadbc      = 90909090,
                             propiedades  = mutableListOf(),
-                            tarifaUsada = "Tarifa15"
+                            tarifaUsada = "Tarifa15",
+                            yaIntroducido = false
                         )
 
                         // Insertamos justo después del base:
                         pedidoViewModel.insertarItemDespues(base, combinadoItem)
-                        actualizarUIProductos()
                     } else {
                         val item = ItemPedido(
                             nombreBase   = producto.Producto,
@@ -344,7 +344,8 @@ class ParrillaFragment : Fragment() {
                             ivaVenta    = producto.IvaVenta,
                             pluadbc = producto.PluAdbc,
                             propiedades  = mutableListOf(),
-                            tarifaUsada = "Tarifa1"
+                            tarifaUsada = "Tarifa1",
+                            yaIntroducido = false
                         )
                         pedidoViewModel.añadirItem(item)
                         ultimoItemSeleccionado = item
@@ -451,24 +452,16 @@ class ParrillaFragment : Fragment() {
     private fun actualizarUIProductos() {
         layoutTicketItems.removeAllViews()
 
-        val items     = pedidoViewModel.obtenerItems(mesaActual, salaActual)
-        var total     = 0.0
-        var baseIndex = -1           // índice del último “producto base”
+        val items = pedidoViewModel.obtenerItems(mesaActual, salaActual)
+        var total = 0.0
 
         items.forEachIndexed { idx, it ->
-
-            /* ---------- FILA “NORMAL” (productos base, cabeceras, etc.) ---------- */
             if (!it.esCombinado()) {
-                baseIndex = idx                           // recordamos dónde está el padre
                 layoutTicketItems.addView( filaPrincipal(it) )
-            }
-            /* ---------- FILA “COMBINADO”  (pluAdbc == 90909090) ------------------- */
-            else {
-                // se inserta sangrada justo debajo de su base
+            } else {
                 layoutTicketItems.addView( filaCombinado(it) )
             }
 
-            /* ---------- PROPIEDADES ---------- */
             it.propiedades.forEach { p -> layoutTicketItems.addView( filaProp(p) ) }
 
             total += it.precio * it.cantidad
@@ -480,6 +473,12 @@ class ParrillaFragment : Fragment() {
 
     private fun enviarPedidoPendiente(incluirConfirmacion: Boolean) {
         val items = pedidoViewModel.obtenerItems(mesaActual, salaActual)
+        val nuevos = items.filter { !it.yaIntroducido }
+        if (nuevos.isEmpty()) {
+            Toast.makeText(requireContext(), "No hay nada nuevo que enviar", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val nombreCam = sharedPref.getString("empleado_nombre", "CAMARERA_DESCONOCIDA") ?: "CAMARERA_DESCONOCIDA"
         val idUnicoPedido = pedidoViewModel.obtenerIdPedidoMesaSeleccionada() ?: return
 
@@ -489,12 +488,10 @@ class ParrillaFragment : Fragment() {
 
         val lineas = mutableListOf<Pedido>()
 
-        items.forEach { item ->
+        nuevos.forEach { item ->
             val total = item.cantidad * item.precio
 
-            Log.d("LINEA", item.toString());
-
-            val linea = Pedido(
+            lineas += Pedido(
                 reg = idUnicoPedido,
                 Hora = horaActual,
                 NombreCam = nombreCam,
@@ -524,11 +521,6 @@ class ParrillaFragment : Fragment() {
                 PluAdbc = item.pluadbc
             )
 
-            Log.e("LINEA", "" + linea);
-
-            lineas += linea
-
-
             // === 2) Una línea por cada propiedad ===
             if (!item.esCombinado()) {
                 item.propiedades.forEach { prop ->
@@ -536,25 +528,18 @@ class ParrillaFragment : Fragment() {
                         ?.firstOrNull { it.Plu == item.plu }
 
                     var propname = when {
-                        // 1) Propiedad “Tapa” para este producto
                         producto?.TextoBotonTapa == prop -> {
                             "_" + producto.TextoBotonTapa
                         }
-
-                        // 2) Propiedad “Media Ración” para este producto
                         producto?.TextoBotonMediaRacion == prop -> {
                             "_" + producto.TextoBotonMediaRacion
                         }
-
-                        // 3) Propiedades de API
                         prop == "Chupito"   -> {
                             "_Chup"
                         }
                         prop == "Combinado" -> {
                             "_Cb"
                         }
-
-                        // 4) Por defecto, tarifa base
                         else -> {
                             "_Pro"
                         }
@@ -567,7 +552,7 @@ class ParrillaFragment : Fragment() {
                     }
                     item.nombre = propname
 
-                    val lineaProp = Pedido(
+                    lineas += Pedido(
                         reg              = idUnicoPedido,
                         Hora             = horaActual,
                         NombreCam        = nombreCam,
@@ -596,8 +581,6 @@ class ParrillaFragment : Fragment() {
                         Familia          = item.familia,
                         PluAdbc          = 90909090
                     )
-
-                    lineas += lineaProp
                 }
             }
         }

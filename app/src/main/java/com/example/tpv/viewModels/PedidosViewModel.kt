@@ -139,30 +139,30 @@ class PedidoViewModel : ViewModel() {
                                     impresora    = linea.Impreso,
                                     ivaVenta     = linea.IvaVenta,
                                     pluadbc      = 90909090,
-                                    propiedades  = mutableListOf()
+                                    propiedades  = mutableListOf(),
+                                    yaIntroducido = true
                                 )
                             )
-                            return@forEach
-                        }
-
-                        val precioBase = linea.Pts.replace(",", ".").toDoubleOrNull() ?: 0.0
-                        lista.add(
-                            ItemPedido(
-                                nombreBase   = linea.Producto,
-                                nombre       = linea.Producto,
-                                precio       = precioBase,
-                                cantidad     = linea.Cantidad.toIntOrNull() ?: 1,
-                                plu          = linea.Plu,
-                                familia      = linea.Familia,
-                                consumoSolo  = linea.Consumo,
-                                impresora    = linea.Impreso,
-                                ivaVenta     = linea.IvaVenta,
-                                pluadbc      = 0,
-                                propiedades  = mutableListOf()
+                        } else {
+                            val precioBase = linea.Pts.replace(",", ".").toDoubleOrNull() ?: 0.0
+                            lista.add(
+                                ItemPedido(
+                                    nombreBase   = linea.Producto,
+                                    nombre       = linea.Producto,
+                                    precio       = precioBase,
+                                    cantidad     = linea.Cantidad.toIntOrNull() ?: 1,
+                                    plu          = linea.Plu,
+                                    familia      = linea.Familia,
+                                    consumoSolo  = linea.Consumo,
+                                    impresora    = linea.Impreso,
+                                    ivaVenta     = linea.IvaVenta,
+                                    pluadbc      = 0,
+                                    propiedades  = mutableListOf(),
+                                    yaIntroducido = true
+                                )
                             )
-                        )
+                        }
                     }
-
                     _itemsPorMesa.value    = mapa
                     _idPedidoPorMesa.value = ids
                 }

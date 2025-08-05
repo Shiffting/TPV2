@@ -13,5 +13,6 @@ data class ItemPedido(
     val pluadbc: Int,
     var propiedades: MutableList<String> = mutableListOf(),
     val isHeader: Boolean = false,
-    var tarifaUsada:String = "Tarifa1"
+    var tarifaUsada:String = "Tarifa1",
+    var yaIntroducido: Boolean = false
 )
