@@ -55,13 +55,6 @@ interface ApiService {
         @Path("id_local") idLocal: Int
     ): Call<List<Terminal>>
 
-    @Headers("Accept: application/json", "Content-Type: application/json")
-    @POST("pedidos")
-    fun enviarPedido(
-        @Header("X-Database-ID") dbId: String,
-        @Body pedido: Pedido
-    ): Call<Void>
-
     @Headers("Content-Type: application/json", "Accept: application/json")
     @POST("pedidos/sincronizar/{reg}")
     fun sincronizarPedido(
@@ -83,6 +76,15 @@ interface ApiService {
         @Query("nombre") nombre: String,
         @Query("colorNet") colorNet: String
     ): Call<List<Propiedades>>
+
+    @Headers("Content-Type: application/json", "Accept: application/json")
+    @DELETE("pedidos/{dbId}/{reg}/{plu}/{cantidad}")
+    fun borrarPedido(
+        @Path("dbId")      dbId: String,
+        @Path("reg")       reg: String,
+        @Path("plu")       plu: String,
+        @Path("cantidad")  cantidad: Int
+    ): Call<Void>
 
 }
 

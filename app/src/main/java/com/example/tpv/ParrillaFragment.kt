@@ -50,16 +50,16 @@ class ParrillaFragment : Fragment() {
     private var mesaActual: String = "sin mesa"
     private var salaActual: String = "sin sala"
     private var idLocal by Delegates.notNull<Int>()
-    private lateinit var nombreLocal:String
-    private lateinit var terminal:String
-    private lateinit var camarero:String
+    private lateinit var nombreLocal: String
+    private lateinit var terminal: String
+    private lateinit var camarero: String
     private val handler = Handler(Looper.getMainLooper())
     private var refrescoActivo = false
     private var productosCargados = false
     private var pedidosCargados = false
-    private lateinit var btnPrimeros:Button
-    private lateinit var btnPropiedades:Button
-    private lateinit var btnCombinado:Button
+    private lateinit var btnPrimeros: Button
+    private lateinit var btnPropiedades: Button
+    private lateinit var btnCombinado: Button
     private lateinit var sharedPref: SharedPreferences
     private var ultimoItemSeleccionado: ItemPedido? = null
     private val productoOriginalMap = mutableMapOf<Int, Producto>()
@@ -86,7 +86,7 @@ class ParrillaFragment : Fragment() {
         terminal = sharedPref.getString("terminal", null).toString()
         camarero = sharedPref.getString("camarero", null).toString()
 
-        val dbId     = sharedPref.getString("dbId", "cloud")!!
+        val dbId = sharedPref.getString("dbId", "cloud")!!
         val colorNet = sharedPref.getString("local_nombre", "")!!
         pedidoViewModel.cargarPedidosPendientesDesdeBD(dbId, colorNet)
 
@@ -96,8 +96,14 @@ class ParrillaFragment : Fragment() {
         layoutTicketItems = view.findViewById(R.id.layoutTicketItems)
 
         // Cargar datos del ViewModel (que a su vez los carga de la base de datos)
-        productosViewModel.cargarFamilias(sharedPref.getString("dbId", "cloud").toString(), nombreLocal)
-        productosViewModel.cargarProductos(sharedPref.getString("dbId", "cloud").toString(), nombreLocal)
+        productosViewModel.cargarFamilias(
+            sharedPref.getString("dbId", "cloud").toString(),
+            nombreLocal
+        )
+        productosViewModel.cargarProductos(
+            sharedPref.getString("dbId", "cloud").toString(),
+            nombreLocal
+        )
 
         // Observar familias y mostrarlas como botones categorías
         productosViewModel.familias.observe(viewLifecycleOwner) { familias ->
@@ -151,22 +157,35 @@ class ParrillaFragment : Fragment() {
         btnPropiedades.visibility = View.INVISIBLE
         btnPropiedades.setOnClickListener {
             val item = ultimoItemSeleccionado ?: return@setOnClickListener
-             val productoOriginal = productoOriginalMap[item.plu] ?: return@setOnClickListener
+            val productoOriginal = productoOriginalMap[item.plu] ?: return@setOnClickListener
             val colorNet = sharedPref.getString("local_nombre", "")!!
 
             // 2) Hacer la llamada
-            RetrofitClient.apiService.getPropiedades(sharedPref.getString("dbId", "cloud").toString(), productoOriginal.Familia, productoOriginal.Producto, colorNet)
+            RetrofitClient.apiService.getPropiedades(
+                sharedPref.getString("dbId", "cloud").toString(),
+                productoOriginal.Familia,
+                productoOriginal.Producto,
+                colorNet
+            )
                 .enqueue(object : Callback<List<Propiedades>> {
-                    override fun onResponse(call: Call<List<Propiedades>>, response: Response<List<Propiedades>>) {
+                    override fun onResponse(
+                        call: Call<List<Propiedades>>,
+                        response: Response<List<Propiedades>>
+                    ) {
                         val props = response.body().orEmpty()
-                        Log.d("Parrilla", "Propiedades recibidas: ${props.size} ${productoOriginal.Familia} ${productoOriginal.Producto} ${colorNet}")
+                        Log.d(
+                            "Parrilla",
+                            "Propiedades recibidas: ${props.size} ${productoOriginal.Familia} ${productoOriginal.Producto} ${colorNet}"
+                        )
                         showPropiedadesDialog(props, productoOriginal, ultimoItemSeleccionado!!)
                     }
+
                     override fun onFailure(
                         call: Call<List<Propiedades>>,
                         t: Throwable
                     ) {
-                        Toast.makeText(context, "Error al cargar propiedades", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Error al cargar propiedades", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 })
         }
@@ -177,15 +196,15 @@ class ParrillaFragment : Fragment() {
             if (!modoCombinado) {
                 // Entramos en modo Combinados
                 productoBaseParaCombinados = ultimoItemSeleccionado
-                modoCombinado            = true
-                btnCombinado.text        = "FIN"
-                btnCombinado.alpha       = 1f
+                modoCombinado = true
+                btnCombinado.text = "FIN"
+                btnCombinado.alpha = 1f
             } else {
                 // Salimos del modo
-                modoCombinado            = false
+                modoCombinado = false
                 productoBaseParaCombinados = null
-                btnCombinado.text        = "COMBINADOS"
-                btnCombinado.visibility  = View.GONE
+                btnCombinado.text = "COMBINADOS"
+                btnCombinado.visibility = View.GONE
             }
         }
 
@@ -201,17 +220,17 @@ class ParrillaFragment : Fragment() {
 
             // creamos un ItemPedido especial para el header
             val headerItem = ItemPedido(
-                nombreBase   = headerName,
-                nombre       = headerName,
-                precio       = 0.0,
-                cantidad     = 1,
-                plu          = 90909090,      // pluAdbc para propiedades/headers
-                familia      = "",            // sin familia
-                consumoSolo  = "",            // según tu modelo
-                impresora    = "6",             // tal y como pides
-                ivaVenta     = "0",
-                pluadbc      = 90909090,      // identifica “propiedad / header”
-                propiedades  = mutableListOf()
+                nombreBase = headerName,
+                nombre = headerName,
+                precio = 0.0,
+                cantidad = 1,
+                plu = 90909090,      // pluAdbc para propiedades/headers
+                familia = "",            // sin familia
+                consumoSolo = "",            // según tu modelo
+                impresora = "6",             // tal y como pides
+                ivaVenta = "0",
+                pluadbc = 90909090,      // identifica “propiedad / header”
+                propiedades = mutableListOf()
             )
 
             // lo añadimos al ViewModel y refrescamos
@@ -256,7 +275,7 @@ class ParrillaFragment : Fragment() {
 
         Log.d("ParrillaFragment", "Familias recibidos: $familias")
 
-        familias.filter { it.VISIBLETPV == 1}.sortedBy { it.NOrden }.forEach { familia ->
+        familias.filter { it.VISIBLETPV == 1 }.sortedBy { it.NOrden }.forEach { familia ->
             val boton = MaterialButton(requireContext()).apply {
                 text = familia.Nombre
                 layoutParams = GridLayout.LayoutParams().apply {
@@ -281,8 +300,8 @@ class ParrillaFragment : Fragment() {
     private fun mostrarProductosDeFamilia(nombreFamilia: String) {
         Log.d("producto", productosViewModel.productos.value.toString())
         val productos = productosViewModel.productos.value
-            ?.filter { it.Familia == nombreFamilia && it.VISIBLETPV == 1 && it.ColorNet == nombreLocal}
-            ?.sortedBy { it.Orden.toIntOrNull() ?: 0}
+            ?.filter { it.Familia == nombreFamilia && it.VISIBLETPV == 1 && it.ColorNet == nombreLocal }
+            ?.sortedBy { it.Orden.toIntOrNull() ?: 0 }
             ?: emptyList()
 
         layoutProductos.removeAllViews()
@@ -303,28 +322,28 @@ class ParrillaFragment : Fragment() {
                 setBackgroundColor("#2196F3".toColorInt()) // Naranja
                 setOnClickListener {
                     // 1) Determinar tarifa y sufijo según modoCombinados
-                    val tarifa   = if (modoCombinados) producto.Tarifa15 else producto.Tarifa1
-                    val sufijo   = if (modoCombinados) "_Cb" else ""
+                    val tarifa = if (modoCombinados) producto.Tarifa15 else producto.Tarifa1
+                    val sufijo = if (modoCombinados) "_Cb" else ""
                     val nombreCb = producto.Producto + sufijo
 
                     if (modoCombinado && productoBaseParaCombinados != null) {
                         // —–––– modo Combinados: generar un ÍTEM “propiedad” pero con tarifa15 —––––
                         val base = productoBaseParaCombinados!!
                         val nombreCb = "${producto.Producto}_Cb"
-                        val price15 = producto.Tarifa15.replace(",",".").toDoubleOrNull() ?: 0.0
+                        val price15 = producto.Tarifa15.replace(",", ".").toDoubleOrNull() ?: 0.0
 
                         val combinadoItem = ItemPedido(
-                            nombreBase   = producto.Producto,
-                            nombre       = nombreCb,
-                            precio       = price15,
-                            cantidad     = 1,
-                            plu          = producto.Plu,
-                            familia      = producto.Familia,
-                            consumoSolo  = producto.ConsumoSolo,
-                            impresora    = producto.Impresora,
-                            ivaVenta     = producto.IvaVenta,
-                            pluadbc      = 90909090,
-                            propiedades  = mutableListOf(),
+                            nombreBase = producto.Producto,
+                            nombre = nombreCb,
+                            precio = price15,
+                            cantidad = 1,
+                            plu = producto.Plu,
+                            familia = producto.Familia,
+                            consumoSolo = producto.ConsumoSolo,
+                            impresora = producto.Impresora,
+                            ivaVenta = producto.IvaVenta,
+                            pluadbc = 90909090,
+                            propiedades = mutableListOf(),
                             tarifaUsada = "Tarifa15",
                             yaIntroducido = false
                         )
@@ -333,39 +352,39 @@ class ParrillaFragment : Fragment() {
                         pedidoViewModel.insertarItemDespues(base, combinadoItem)
                     } else {
                         val item = ItemPedido(
-                            nombreBase   = producto.Producto,
-                            nombre      = nombreCb,
-                            precio      = tarifa.replace(",",".").toDouble(),
-                            cantidad    = 1,
-                            plu         = producto.Plu,
-                            familia     = producto.Familia,
+                            nombreBase = producto.Producto,
+                            nombre = nombreCb,
+                            precio = tarifa.replace(",", ".").toDouble(),
+                            cantidad = 1,
+                            plu = producto.Plu,
+                            familia = producto.Familia,
                             consumoSolo = producto.ConsumoSolo,
-                            impresora   = producto.Impresora,
-                            ivaVenta    = producto.IvaVenta,
+                            impresora = producto.Impresora,
+                            ivaVenta = producto.IvaVenta,
                             pluadbc = producto.PluAdbc,
-                            propiedades  = mutableListOf(),
+                            propiedades = mutableListOf(),
                             tarifaUsada = "Tarifa1",
                             yaIntroducido = false
                         )
                         pedidoViewModel.añadirItem(item)
                         ultimoItemSeleccionado = item
                         btnCombinado.visibility = View.VISIBLE
-                        btnCombinado.alpha      = 0.8f
-                        btnCombinado.text       = "COMBINADOS"
+                        btnCombinado.alpha = 0.8f
+                        btnCombinado.text = "COMBINADOS"
                     }
                     actualizarUIProductos()
 
                     // Comprobamos si hay PROPIEDADES disponibles de cualquier tipo
                     val tieneApiProp = producto.Tarifa11 != "0"          // “Chupito”
-                    val tieneTapa   = producto.TextoBotonTapa != "-"
-                    val tieneMedia  = producto.TextoBotonMediaRacion != "-"
+                    val tieneTapa = producto.TextoBotonTapa != "-"
+                    val tieneMedia = producto.TextoBotonMediaRacion != "-"
 
                     btnPropiedades.visibility =
                         if (tieneApiProp || tieneTapa || tieneMedia) View.VISIBLE
                         else View.INVISIBLE
 
-                    val dbId    = sharedPref.getString("dbId", "cloud")!!
-                    val color   = sharedPref.getString("local_nombre", "")!!
+                    val dbId = sharedPref.getString("dbId", "cloud")!!
+                    val color = sharedPref.getString("local_nombre", "")!!
                     RetrofitClient.apiService
                         .getPropiedades(dbId, producto.Familia, producto.Producto, color)
                         .enqueue(object : Callback<List<Propiedades>> {
@@ -373,11 +392,14 @@ class ParrillaFragment : Fragment() {
                                 call: Call<List<Propiedades>>,
                                 response: Response<List<Propiedades>>
                             ) {
-                                if (response.isSuccessful && response.body().orEmpty().isNotEmpty()) {
+                                if (response.isSuccessful && response.body().orEmpty()
+                                        .isNotEmpty()
+                                ) {
                                     // ¡tenemos props en la API!
                                     btnPropiedades.visibility = View.VISIBLE
                                 }
                             }
+
                             override fun onFailure(call: Call<List<Propiedades>>, t: Throwable) {
                                 // opcional: log o toast
                             }
@@ -421,11 +443,11 @@ class ParrillaFragment : Fragment() {
             }
             .setPositiveButton("OK") { _, _ ->
                 // Nombre base + lista de propiedades
-                val tarifaBase = producto.Tarifa1.replace(",",".").toDoubleOrNull() ?: 0.0
+                val tarifaBase = producto.Tarifa1.replace(",", ".").toDoubleOrNull() ?: 0.0
                 val (nuevoPrecio, nuevaTarifaNombre) = when {
-                    "Chupito"      in item.propiedades -> producto.Tarifa11.toDouble() to "Tarifa11"
-                    "Combinado"    in item.propiedades -> producto.Tarifa15.toDouble() to "Tarifa15"
-                    producto.TextoBotonTapa        in item.propiedades -> producto.Tarifa13.toDouble() to "Tarifa13"
+                    "Chupito" in item.propiedades -> producto.Tarifa11.toDouble() to "Tarifa11"
+                    "Combinado" in item.propiedades -> producto.Tarifa15.toDouble() to "Tarifa15"
+                    producto.TextoBotonTapa in item.propiedades -> producto.Tarifa13.toDouble() to "Tarifa13"
                     producto.TextoBotonMediaRacion in item.propiedades -> producto.Tarifa14.toDouble() to "Tarifa14"
                     else -> tarifaBase to item.tarifaUsada
                 }
@@ -434,7 +456,7 @@ class ParrillaFragment : Fragment() {
                     when (prop) {
                         // si alguna de tus props API tuviera coste adicional distinto
                         // de la tarifa base, lo pondrías aquí…
-                        else         -> 0.0
+                        else -> 0.0
                     }
                 }
                 item.precio = nuevoPrecio + extra
@@ -457,12 +479,12 @@ class ParrillaFragment : Fragment() {
 
         items.forEachIndexed { idx, it ->
             if (!it.esCombinado()) {
-                layoutTicketItems.addView( filaPrincipal(it) )
+                layoutTicketItems.addView(filaPrincipal(it))
             } else {
-                layoutTicketItems.addView( filaCombinado(it) )
+                layoutTicketItems.addView(filaCombinado(it))
             }
 
-            it.propiedades.forEach { p -> layoutTicketItems.addView( filaProp(p) ) }
+            it.propiedades.forEach { p -> layoutTicketItems.addView(filaProp(p)) }
 
             total += it.precio * it.cantidad
         }
@@ -473,162 +495,153 @@ class ParrillaFragment : Fragment() {
 
     private fun enviarPedidoPendiente(incluirConfirmacion: Boolean) {
         val items = pedidoViewModel.obtenerItems(mesaActual, salaActual)
-        val nuevos = items.filter { !it.yaIntroducido }
-        if (nuevos.isEmpty()) {
+        val lineas = mutableListOf<Pedido>()
+        val now = LocalDateTime.now()
+        val fecha = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        val hora  = now.format(DateTimeFormatter.ofPattern("HH:mm:ss"))
+        val nombreCam = sharedPref.getString("empleado_nombre", "CAMARERA_DESCONOCIDA")!!
+        val idPedido  = pedidoViewModel.obtenerIdPedidoMesaSeleccionada() ?: return
+
+        // 1) Recorremos todos los items y calculamos deltas
+        for (item in items) {
+            // — envío de unidades nuevas —
+            val cantidadNueva = item.cantidad - item.introducidas
+            if (cantidadNueva > 0) {
+                lineas += Pedido(
+                    reg = idPedido, Hora = hora, NombreCam = nombreCam,
+                    NombreFormaPago = salaActual, Fecha = fecha, FechaReg = fecha,
+                    Barra = 1, Terminal = 1, Plu = item.plu,
+                    Producto = item.nombre, Cantidad =
+                        if (item.esCombinado()) "0" else cantidadNueva.toString(),
+                    Pts = item.precio.toString(), ImpresoCli = 0,
+                    Tarifa = item.tarifaUsada, CBarras = terminal,
+                    PagoPendiente = mesaActual, Comensales = "1",
+                    Consumo = item.consumoSolo, IDCLIENTE = "0A_VENTA",
+                    Impreso = item.impresora, NombTerminal = nombreLocal,
+                    IvaVenta = item.ivaVenta, Iva = item.ivaVenta,
+                    TotalReg = (item.precio * cantidadNueva).toString(),
+                    incluirConfirmacion = incluirConfirmacion,
+                    Familia = item.familia, PluAdbc = item.pluadbc
+                )
+                item.introducidas += cantidadNueva
+            }
+
+            // — envío de propiedades nuevas —
+            if (!item.esCombinado()) {
+                val totalProps = item.propiedades.size
+                val propsNuevas = totalProps - item.propsIntroducidas
+                if (propsNuevas > 0) {
+                    // solo las que aún no enviamos
+                    val nuevas = item.propiedades.subList(item.propsIntroducidas, totalProps)
+                    for (prop in nuevas) {
+                        // aquí calculas el sufijo/tarifa si lo necesitas
+                        lineas += Pedido(
+                            reg = idPedido, Hora = hora, NombreCam = nombreCam,
+                            NombreFormaPago = salaActual, Fecha = fecha, FechaReg = fecha,
+                            Barra = 1, Terminal = 1, Plu = item.plu,
+                            Producto = prop, Cantidad = "0", Pts = "0", ImpresoCli = 0,
+                            Tarifa = "0", CBarras = terminal, PagoPendiente = mesaActual,
+                            Comensales = "1", Consumo = item.consumoSolo,
+                            IDCLIENTE = "0A_VENTA", Impreso = item.impresora,
+                            NombTerminal = nombreLocal, IvaVenta = item.ivaVenta,
+                            Iva = item.ivaVenta, TotalReg = "0",
+                            incluirConfirmacion = incluirConfirmacion,
+                            Familia = item.familia, PluAdbc = 90909090
+                        )
+                    }
+                    item.propsIntroducidas = totalProps
+                }
+            }
+        }
+
+        // 2) Si tras todo no hay líneas, abortamos
+        if (lineas.isEmpty()) {
             Toast.makeText(requireContext(), "No hay nada nuevo que enviar", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val nombreCam = sharedPref.getString("empleado_nombre", "CAMARERA_DESCONOCIDA") ?: "CAMARERA_DESCONOCIDA"
-        val idUnicoPedido = pedidoViewModel.obtenerIdPedidoMesaSeleccionada() ?: return
+        // 3) Enviamos en serie para respetar el orden
+        enviarLineasEnSerie(sharedPref.getString("dbId","cloud")!!, idPedido, lineas)
 
-        val now = LocalDateTime.now()
-        val fechaActual = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-        val horaActual = now.format(DateTimeFormatter.ofPattern("HH:mm:ss"))
-
-        val lineas = mutableListOf<Pedido>()
-
-        nuevos.forEach { item ->
-            val total = item.cantidad * item.precio
-
-            lineas += Pedido(
-                reg = idUnicoPedido,
-                Hora = horaActual,
-                NombreCam = nombreCam,
-                NombreFormaPago = salaActual,
-                Fecha = fechaActual,
-                FechaReg = fechaActual,
-                Barra = 1,
-                Terminal = 1,
-                Plu = item.plu,
-                Producto = item.nombre,
-                Cantidad = if (item.esCombinado()) "0" else item.cantidad.toString(),
-                Pts = item.precio.toString(),
-                ImpresoCli = 0,
-                Tarifa = item.tarifaUsada,
-                CBarras = terminal,
-                PagoPendiente = mesaActual,
-                Comensales = "1",
-                Consumo = item.consumoSolo,
-                IDCLIENTE = "0A_VENTA",
-                Impreso = item.impresora,
-                NombTerminal = nombreLocal,
-                IvaVenta = item.ivaVenta,
-                Iva = item.ivaVenta,
-                TotalReg = total.toString(),
-                incluirConfirmacion = incluirConfirmacion,
-                Familia = item.familia,
-                PluAdbc = item.pluadbc
-            )
-
-            // === 2) Una línea por cada propiedad ===
-            if (!item.esCombinado()) {
-                item.propiedades.forEach { prop ->
-                    val producto = productosViewModel.productos.value
-                        ?.firstOrNull { it.Plu == item.plu }
-
-                    var propname = when {
-                        producto?.TextoBotonTapa == prop -> {
-                            "_" + producto.TextoBotonTapa
-                        }
-                        producto?.TextoBotonMediaRacion == prop -> {
-                            "_" + producto.TextoBotonMediaRacion
-                        }
-                        prop == "Chupito"   -> {
-                            "_Chup"
-                        }
-                        prop == "Combinado" -> {
-                            "_Cb"
-                        }
-                        else -> {
-                            "_Pro"
-                        }
-                    }
-
-                    propname = if (prop.endsWith(propname)) {
-                        prop
-                    } else {
-                        prop + propname
-                    }
-                    item.nombre = propname
-
-                    lineas += Pedido(
-                        reg              = idUnicoPedido,
-                        Hora             = horaActual,
-                        NombreCam        = nombreCam,
-                        NombreFormaPago  = salaActual,
-                        Fecha            = fechaActual,
-                        FechaReg         = fechaActual,
-                        Barra            = 1,
-                        Terminal         = 1,
-                        Plu              = item.plu,
-                        Producto         = item.nombre,
-                        Cantidad         = "0",
-                        Pts              = "0",
-                        ImpresoCli       = 0,
-                        Tarifa           = "0",
-                        CBarras          = terminal,
-                        PagoPendiente   = mesaActual,
-                        Comensales       = "1",
-                        Consumo          = item.consumoSolo,
-                        IDCLIENTE        = "0A_VENTA",
-                        Impreso          = item.impresora,
-                        NombTerminal     = nombreLocal,
-                        IvaVenta         = item.ivaVenta,
-                        Iva              = item.ivaVenta,
-                        TotalReg         = "0",
-                        incluirConfirmacion = incluirConfirmacion,
-                        Familia          = item.familia,
-                        PluAdbc          = 90909090
-                    )
-                }
-            }
-        }
-        enviarLineasEnSerie(sharedPref.getString("dbId","cloud")!!, idUnicoPedido, lineas)
+        // 4) Limpiamos UI y ViewModel
         limpiarVistaDeTicket()
         pedidoViewModel.liberarPantallaActual()
         Toast.makeText(requireContext(), "Productos enviados como pendientes", Toast.LENGTH_SHORT).show()
     }
 
+
     /**  Producto base: cantidad – nombre – precio  */
-    private fun filaPrincipal(item: ItemPedido) = LinearLayout(requireContext()).apply {
-        orientation = LinearLayout.HORIZONTAL
-        layoutParams = LinearLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        ).apply { setMargins(0, 4, 0, 4) }
-        setPadding(8, 8, 8, 8)
-        setBackgroundResource(android.R.drawable.list_selector_background)
+    @SuppressLint("SetTextI18n")
+    private fun filaPrincipal(item: ItemPedido): View {
+        // Necesitamos estos valores para la llamada
+        val idPedido =
+            pedidoViewModel.obtenerIdPedidoMesaSeleccionada() ?: return View(requireContext())
+        val dbId = sharedPref.getString("dbId", "cloud")!!
 
-        // breve click → seleccionar
-        setOnClickListener {
-            ultimoItemSeleccionado = item
-            btnPropiedades.visibility =
-                if (item.propiedades.isNotEmpty()) View.VISIBLE else View.GONE
-        }
-
-        // cantidad
-        addView(TextView(context).apply {
-            text = "${item.cantidad} x"
-            textSize = 16f; setTextColor(Color.BLACK)
+        return LinearLayout(requireContext()).apply {
+            orientation = LinearLayout.HORIZONTAL
             layoutParams = LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            ).apply { marginEnd = 8 }
-        })
-        // nombre
-        addView(TextView(context).apply {
-            text = item.nombreBase
-            textSize = 16f; setTextColor(Color.BLACK)
-            layoutParams = LinearLayout.LayoutParams(0,
-                ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
-        })
-        // precio
-        addView(TextView(context).apply {
-            text = "%.2f €".format(item.precio)
-            textSize = 16f; setTextColor(Color.DKGRAY)
-        })
+                MATCH_PARENT, WRAP_CONTENT
+            ).apply { setMargins(0, 4, 0, 4) }
+            setPadding(8, 8, 8, 8)
+            setBackgroundResource(android.R.drawable.list_selector_background)
+
+            // click corto: selecciona para propiedades
+            setOnClickListener {
+                ultimoItemSeleccionado = item
+                btnPropiedades.visibility =
+                    if (item.propiedades.isNotEmpty()) View.VISIBLE else View.GONE
+            }
+
+            // long click: borrar N unidades
+            setOnLongClickListener {
+                // NumberPicker para elegir cuántas unidades borrar
+                val picker = NumberPicker(requireContext()).apply {
+                    minValue = 1
+                    maxValue = item.cantidad
+                    value = 1
+                }
+
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle("¿Cuántas unidades borrar?")
+                    .setView(picker)
+                    .setPositiveButton("Borrar") { _, _ ->
+                        val toRemove = picker.value
+                        // 1) Actualizamos el ViewModel
+                        pedidoViewModel.reducirItem(item, toRemove)
+                        //También vaciamos la lista de propiedades si el item desaparece
+                        if (item.cantidad - toRemove <= 0) {
+                            item.propiedades.clear()
+                        }
+                        actualizarUIProductos()
+                        Log.d("hola", toRemove.toString())
+                        RetrofitClient.apiService
+                            .borrarPedido(dbId, idPedido, item.plu.toString(), toRemove)
+                            .enqueue(logCallback("delete", item.plu, idPedido))
+                    }
+                    .setNegativeButton("Cancelar", null)
+                    .show()
+
+                true
+            }
+
+            // Ahora añadimos los tres elementos: cantidad, nombre y precio
+            addView(TextView(context).apply {
+                text = "${item.cantidad} x"; textSize = 16f; setTextColor(Color.BLACK)
+                layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
+                    .apply { marginEnd = 8 }
+            })
+            addView(TextView(context).apply {
+                text = item.nombreBase; textSize = 16f; setTextColor(Color.BLACK)
+                layoutParams = LinearLayout.LayoutParams(0, WRAP_CONTENT, 1f)
+            })
+            addView(TextView(context).apply {
+                text = "%.2f €".format(item.precio); textSize = 16f; setTextColor(Color.DKGRAY)
+                layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
+            })
+        }
     }
+
 
     /**  Línea para cada COMBINADO  */
     private fun filaCombinado(item: ItemPedido) = LinearLayout(requireContext()).apply {
@@ -644,7 +657,8 @@ class ParrillaFragment : Fragment() {
             text = "${item.cantidad} x ${item.nombreBase}"
             textSize = 14f; setTextColor(Color.GRAY)
             layoutParams = LinearLayout.LayoutParams(
-                0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
+                0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f
+            )
         })
         // precio
         addView(TextView(context).apply {
@@ -690,6 +704,7 @@ private fun logCallback(tag: String, plu: Int, reg: String) =
                 Log.e("API", "❌ $tag (plu=$plu) ERROR ${response.code()} body=$body")
             }
         }
+
         override fun onFailure(call: Call<Void>, t: Throwable) {
             Log.e("API", "⚠️ Fallo $tag (plu=$plu) en reg=$reg", t)
         }
@@ -710,6 +725,7 @@ private fun enviarLineasEnSerie(
                 // pase lo que pase, disparamos la siguiente línea
                 enviarLineasEnSerie(dbId, reg, lineas, index + 1)
             }
+
             override fun onFailure(call: Call<Void>, t: Throwable) {
                 // aquí podrías parar o reintentar, según tus necesidades
                 enviarLineasEnSerie(dbId, reg, lineas, index + 1)

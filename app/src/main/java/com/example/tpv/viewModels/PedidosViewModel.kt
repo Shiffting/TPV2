@@ -44,6 +44,24 @@ class PedidoViewModel : ViewModel() {
         _itemsPorMesa.value = mapa
     }
 
+    fun reducirItem(item: ItemPedido, cantidad: Int) {
+        val clave = claveSalaMesa() ?: return
+        val mapa  = _itemsPorMesa.value ?: return
+        val lista = mapa[clave] ?: return
+
+        val idx = lista.indexOfFirst { it === item }
+        if (idx == -1) return
+
+        val actual = lista[idx]
+        val nueva = (actual.cantidad - cantidad).coerceAtLeast(0)
+        if (nueva > 0) {
+            actual.cantidad = nueva
+        } else {
+            lista.removeAt(idx)
+        }
+        _itemsPorMesa.value = mapa
+    }
+
     fun obtenerItems(mesa: String, sala: String?): List<ItemPedido> {
         if (sala == null) return emptyList()
         return _itemsPorMesa.value?.get("$sala-$mesa") ?: emptyList()
@@ -115,7 +133,6 @@ class PedidoViewModel : ViewModel() {
                     if (!response.isSuccessful) return
                     val pedidos = response.body() ?: return
 
-                    // --- Mantenemos orden de inserción
                     val mapa = linkedMapOf<String, MutableList<ItemPedido>>()
                     val ids  = mutableMapOf<String, String>()
 
@@ -125,44 +142,40 @@ class PedidoViewModel : ViewModel() {
                         val lista = mapa.getOrPut(clave) { mutableListOf() }
 
                         if (linea.PluAdbc == 90909090) {
-                            // Las tratamos como un ItemPedido independiente
-                            val precio = linea.Pts.replace(",", ".").toDoubleOrNull() ?: 0.0
-                            lista.add(
-                                ItemPedido(
-                                    nombreBase   = linea.Producto,
-                                    nombre       = linea.Producto,
-                                    precio       = precio,
-                                    cantidad     = linea.Cantidad.toIntOrNull() ?: 1,
-                                    plu          = linea.Plu,
-                                    familia      = linea.Familia,
-                                    consumoSolo  = linea.Consumo,
-                                    impresora    = linea.Impreso,
-                                    ivaVenta     = linea.IvaVenta,
-                                    pluadbc      = 90909090,
-                                    propiedades  = mutableListOf(),
-                                    yaIntroducido = true
-                                )
-                            )
+                            // propiedad: la añado a la última base
+                            lista.lastOrNull()?.propiedades?.add(linea.Producto)
                         } else {
-                            val precioBase = linea.Pts.replace(",", ".").toDoubleOrNull() ?: 0.0
+                            // producto base
+                            val precioBase = linea.Pts.replace(",",".").toDoubleOrNull() ?: 0.0
                             lista.add(
                                 ItemPedido(
-                                    nombreBase   = linea.Producto,
-                                    nombre       = linea.Producto,
-                                    precio       = precioBase,
-                                    cantidad     = linea.Cantidad.toIntOrNull() ?: 1,
-                                    plu          = linea.Plu,
-                                    familia      = linea.Familia,
-                                    consumoSolo  = linea.Consumo,
-                                    impresora    = linea.Impreso,
-                                    ivaVenta     = linea.IvaVenta,
-                                    pluadbc      = 0,
-                                    propiedades  = mutableListOf(),
-                                    yaIntroducido = true
+                                    nombreBase       = linea.Producto,
+                                    nombre           = linea.Producto,
+                                    precio           = precioBase,
+                                    cantidad         = linea.Cantidad.toIntOrNull() ?: 1,
+                                    plu              = linea.Plu,
+                                    familia          = linea.Familia,
+                                    consumoSolo      = linea.Consumo,
+                                    impresora        = linea.Impreso,
+                                    ivaVenta         = linea.IvaVenta,
+                                    pluadbc          = 0,
+                                    propiedades      = mutableListOf(),
+                                    yaIntroducido    = true,
+                                    introducidas     = linea.Cantidad.toIntOrNull() ?: 1,
+                                    propsIntroducidas= 0  // temporal; lo actualizamos abajo
                                 )
                             )
                         }
                     }
+
+                    // **Aquí asignamos propsIntroducidas = número de props que cargó de BD**
+                    mapa.values.forEach { listaItems ->
+                        listaItems.forEach { item ->
+                            item.introducidas     = item.cantidad
+                            item.propsIntroducidas = item.propiedades.size
+                        }
+                    }
+
                     _itemsPorMesa.value    = mapa
                     _idPedidoPorMesa.value = ids
                 }
@@ -172,6 +185,7 @@ class PedidoViewModel : ViewModel() {
                 }
             })
     }
+
 
 
     /** Inserta `nuevo` justo después de `base` dentro de la lista de items de esa mesa. */
