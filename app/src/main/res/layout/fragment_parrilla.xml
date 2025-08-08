@@ -106,15 +106,18 @@
                 android:id="@+id/btnPendiente"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:backgroundTint="#4CAF50"
                 android:layout_marginStart="8dp"
-                android:text="Dejar pendiente" />
+
+                android:text="DPEND" />
 
             <Button
                 android:id="@+id/btnImprimir"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:backgroundTint="#4CAF50"
                 android:layout_marginStart="8dp"
-                android:text="Imprimir y dejar pendiente" />
+                android:text="IMPEND" />
         </LinearLayout>
 
         <LinearLayout
@@ -128,14 +131,14 @@
                 android:id="@+id/btnPropiedades"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="Propiedades" />
+                android:text="PROPIEDADES" />
 
             <Button
                 android:id="@+id/btnCombinado"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
-                android:text="Combinado" />
+                android:text="COMBI" />
 
             <Button
                 android:id="@+id/btnPrimeros"

@@ -18,25 +18,29 @@ class PedidoViewModel : ViewModel() {
     private val _salaSeleccionada = MutableLiveData<String?>()
     val salaSeleccionada: LiveData<String?> get() = _salaSeleccionada
     private val _idPedidoPorMesa = MutableLiveData<MutableMap<String, String>>(mutableMapOf())
-    private val _itemsPorMesa = MutableLiveData<MutableMap<String, MutableList<ItemPedido>>>(mutableMapOf())
+    private val _itemsPorMesa =
+        MutableLiveData<MutableMap<String, MutableList<ItemPedido>>>(mutableMapOf())
     val itemsPorMesa: LiveData<MutableMap<String, MutableList<ItemPedido>>> = _itemsPorMesa
+
+    // PedidoViewModel.kt
 
     fun añadirItem(item: ItemPedido) {
         val clave = claveSalaMesa() ?: return
         val mapa  = _itemsPorMesa.value ?: mutableMapOf()
         val lista = mapa.getOrPut(clave) { mutableListOf() }
-        /* ─── buscamos un hueco válido ─── */
-        val idxValido = lista
-            .withIndex()
-            .indexOfFirst { (idx, it) ->
-                it.plu == item.plu &&
-                        !it.esCombinado() &&
-                        !lista.itemTieneCombinados(idx)
-            }
+
+        // BUSCAMOS LÍNEA IGUAL: mismo PLU y misma lista de propiedades
+        val idxValido = lista.withIndex().indexOfFirst { (_, it) ->
+            it.plu == item.plu
+                    && it.propiedades == item.propiedades    // <— COMPARAR PROPIEDADES
+                    && !it.esCombinado()
+        }
 
         if (idxValido >= 0) {
+            // Si existe, aumentamos la cantidad
             lista[idxValido].cantidad++
         } else {
+            // Si no existe, añadimos una línea nueva
             lista.add(item)
         }
 
@@ -44,9 +48,10 @@ class PedidoViewModel : ViewModel() {
         _itemsPorMesa.value = mapa
     }
 
+
     fun reducirItem(item: ItemPedido, cantidad: Int) {
         val clave = claveSalaMesa() ?: return
-        val mapa  = _itemsPorMesa.value ?: return
+        val mapa = _itemsPorMesa.value ?: return
         val lista = mapa[clave] ?: return
 
         val idx = lista.indexOfFirst { it === item }
@@ -66,6 +71,7 @@ class PedidoViewModel : ViewModel() {
         if (sala == null) return emptyList()
         return _itemsPorMesa.value?.get("$sala-$mesa") ?: emptyList()
     }
+
     fun seleccionarSala(sala: String?) {
         _salaSeleccionada.value = sala
         val clave = claveSalaMesa() ?: return
@@ -129,12 +135,15 @@ class PedidoViewModel : ViewModel() {
     fun cargarPedidosPendientesDesdeBD(dbId: String, colorNet: String) {
         RetrofitClient.apiService.getPedidosPendientes(dbId, colorNet)
             .enqueue(object : Callback<List<Pedido>> {
-                override fun onResponse(call: Call<List<Pedido>>, response: Response<List<Pedido>>) {
+                override fun onResponse(
+                    call: Call<List<Pedido>>,
+                    response: Response<List<Pedido>>
+                ) {
                     if (!response.isSuccessful) return
                     val pedidos = response.body() ?: return
 
                     val mapa = linkedMapOf<String, MutableList<ItemPedido>>()
-                    val ids  = mutableMapOf<String, String>()
+                    val ids = mutableMapOf<String, String>()
 
                     pedidos.forEach { linea ->
                         val clave = "${linea.NombreFormaPago}-${linea.PagoPendiente}"
@@ -146,23 +155,23 @@ class PedidoViewModel : ViewModel() {
                             lista.lastOrNull()?.propiedades?.add(linea.Producto)
                         } else {
                             // producto base
-                            val precioBase = linea.Pts.replace(",",".").toDoubleOrNull() ?: 0.0
+                            val precioBase = linea.Pts.replace(",", ".").toDoubleOrNull() ?: 0.0
                             lista.add(
                                 ItemPedido(
-                                    nombreBase       = linea.Producto,
-                                    nombre           = linea.Producto,
-                                    precio           = precioBase,
-                                    cantidad         = linea.Cantidad.toIntOrNull() ?: 1,
-                                    plu              = linea.Plu,
-                                    familia          = linea.Familia,
-                                    consumoSolo      = linea.Consumo,
-                                    impresora        = linea.Impreso,
-                                    ivaVenta         = linea.IvaVenta,
-                                    pluadbc          = 0,
-                                    propiedades      = mutableListOf(),
-                                    yaIntroducido    = true,
-                                    introducidas     = linea.Cantidad.toIntOrNull() ?: 1,
-                                    propsIntroducidas= 0  // temporal; lo actualizamos abajo
+                                    nombreBase = linea.Producto,
+                                    nombre = linea.Producto,
+                                    precio = precioBase,
+                                    cantidad = linea.Cantidad.toIntOrNull() ?: 1,
+                                    plu = linea.Plu,
+                                    familia = linea.Familia,
+                                    consumoSolo = linea.Consumo,
+                                    impresora = linea.Impreso,
+                                    ivaVenta = linea.IvaVenta,
+                                    pluadbc = 0,
+                                    propiedades = mutableListOf(),
+                                    yaIntroducido = true,
+                                    introducidas = linea.Cantidad.toIntOrNull() ?: 1,
+                                    propsIntroducidas = 0  // temporal; lo actualizamos abajo
                                 )
                             )
                         }
@@ -171,12 +180,12 @@ class PedidoViewModel : ViewModel() {
                     // **Aquí asignamos propsIntroducidas = número de props que cargó de BD**
                     mapa.values.forEach { listaItems ->
                         listaItems.forEach { item ->
-                            item.introducidas     = item.cantidad
+                            item.introducidas = item.cantidad
                             item.propsIntroducidas = item.propiedades.size
                         }
                     }
 
-                    _itemsPorMesa.value    = mapa
+                    _itemsPorMesa.value = mapa
                     _idPedidoPorMesa.value = ids
                 }
 
@@ -185,7 +194,6 @@ class PedidoViewModel : ViewModel() {
                 }
             })
     }
-
 
 
     /** Inserta `nuevo` justo después de `base` dentro de la lista de items de esa mesa. */

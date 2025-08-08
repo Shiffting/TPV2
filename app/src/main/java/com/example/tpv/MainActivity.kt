@@ -4,19 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Spinner
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.lifecycle.ViewModelProvider
 import com.example.tpv.viewModels.LocalesViewModel
-import es.redsys.paysys.Utils.Log
-import android.widget.AdapterView
 
 class MainActivity : AppCompatActivity() {
 
@@ -25,130 +19,112 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_main)
-
-        val idLocalEditText = findViewById<EditText>(R.id.tokenInput)
-        val spinnerTerminales = findViewById<Spinner>(R.id.idInput)
-        val spinnerDB = findViewById<Spinner>(R.id.spinner2)
-        val textViewLocal = findViewById<TextView>(R.id.textView2)
-        val button = findViewById<Button>(R.id.button1)
+        // Preferencias
         val prefs = getSharedPreferences("TPV_PREFS", MODE_PRIVATE)
 
-        // Define your DB options here
+        // 0) Si ya tenemos todo, saltamos
+        val savedLocalId  = prefs.getInt("local_id", -1)
+        val savedTerminal = prefs.getString("terminal", null)
+        if (savedLocalId != -1 && !savedTerminal.isNullOrEmpty()) {
+            startActivity(Intent(this, DateLogActivity::class.java))
+            finish()
+            return
+        }
+
+        setContentView(R.layout.activity_main)
+
+        // Vistas
+        val idLocalEditText   = findViewById<EditText>(R.id.tokenInput)
+        val spinnerTerminales = findViewById<Spinner>(R.id.idInput)
+        val spinnerDB         = findViewById<Spinner>(R.id.spinner2)
+        val textViewLocal     = findViewById<TextView>(R.id.textView2)
+        val button            = findViewById<Button>(R.id.button1)
+
+        // --- 1) Spinner de DB ---
         val dbOptions = listOf("local", "cloud")
-
-        // Create adapter and assign to spinner
-        val dbAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, dbOptions)
-        spinnerDB.adapter = dbAdapter
-
-        val savedDbId = prefs.getString("dbId", "cloud")
-
-        val selectedIndex = dbOptions.indexOf(savedDbId)
-        if (selectedIndex >= 0) {
-            spinnerDB.setSelection(selectedIndex)
+        spinnerDB.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, dbOptions)
+        // Selección previa
+        prefs.getString("dbId", "cloud")?.let {
+            val idx = dbOptions.indexOf(it)
+            if (idx >= 0) spinnerDB.setSelection(idx)
         }
 
         spinnerDB.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                val selectedDb = parent.getItemAtPosition(position).toString()
-                prefs.edit { putString("dbId", selectedDb) }
-                Log.d("MainActivity", "Selected DB changed to: $selectedDb")
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
+                val selectedDb = parent.getItemAtPosition(pos).toString()
+
+                // Guardamos el dbId y **reseteamos** local y terminal
+                prefs.edit {
+                    putString("dbId", selectedDb)
+                    remove("local_id")
+                    remove("local_nombre")
+                    remove("terminal")
+                }
+                Log.d("MainActivity", "DB cambiado a: $selectedDb -- reiniciando selecciones de local/terminal")
+
+                // Limpiamos UI de local/terminal
+                idLocalEditText.text.clear()
+                textViewLocal.text = ""
+                spinnerTerminales.adapter = null
+
+                // Recargamos locales de la nueva DB
+                viewModel.cargarLocales(selectedDb)
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>) {
-                prefs.edit { putString("dbId", "cloud") }
-            }
+            override fun onNothingSelected(parent: AdapterView<*>) { /* no-op */ }
         }
 
+        // --- 2) Configurar ViewModel ---
         viewModel = ViewModelProvider(this)[LocalesViewModel::class.java]
-
-        // Carga todos los locales una sola vez
-        viewModel.cargarLocales(prefs.getString("dbId", "cloud").toString())
+        // Carga inicial (por si ya había dbId guardado)
+        viewModel.cargarLocales(prefs.getString("dbId", "cloud").orEmpty())
 
         viewModel.localSeleccionado.observe(this) { local ->
             if (local != null) {
                 textViewLocal.text = local.nombre_local
-
-                // 🔐 Guardar local en SharedPreferences desde la Activity (válido aquí)
                 prefs.edit {
                     putInt("local_id", local.id_local)
-                        .putString("local_nombre", local.nombre_local)
-                    apply()
+                    putString("local_nombre", local.nombre_local)
                 }
             } else {
                 textViewLocal.text = "Local no encontrado"
             }
         }
 
-        viewModel.terminales.observe(this) { terminales ->
-            val nombres = terminales.map { it.nombre_terminal }
-            val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, nombres)
-            spinnerTerminales.adapter = adapter
+        // --- 3) Spinner de terminales ---
+        viewModel.terminales.observe(this) { terms ->
+            val names = terms.map { it.nombre_terminal }
+            spinnerTerminales.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, names)
 
-            // 🔐 Guardar primer terminal si existe
-            if (terminales.isNotEmpty()) {
-                Log.d("terminales", nombres.toString())
-                prefs.edit {
-                    putString("terminal_nombre", terminales[0].nombre_terminal)
-                }
-            } else {
-                Log.d("terminales", "error con los terminales")
+            // Si acabamos de cambiar DB y no hay terminal guardada, preseleccionamos la primera
+            if (prefs.getString("terminal", null).isNullOrEmpty() && terms.isNotEmpty()) {
+                prefs.edit { putString("terminal", terms[0].nombre_terminal) }
             }
         }
 
+        // --- 4) Filtrar locales según ID escrito ---
         idLocalEditText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                viewModel.seleccionarLocalPorIdTexto(prefs.getString("dbId", "cloud").toString(), s.toString())
+                viewModel.seleccionarLocalPorIdTexto(
+                    prefs.getString("dbId", "cloud").orEmpty(),
+                    s.toString()
+                )
             }
-
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
 
+        // --- 5) Botón Continuar ---
         button.setOnClickListener {
-            val idLocal = prefs.getInt("local_id", -1)
-            val terminalSeleccionado = spinnerTerminales.selectedItem?.toString()
-
-            if (idLocal != -1 && !terminalSeleccionado.isNullOrEmpty()) {
-                // Guardar terminal si no lo habías guardado antes
-                prefs.edit { putString("terminal", terminalSeleccionado) }
-                val myIntent = Intent(this@MainActivity, DateLogActivity::class.java)
-                this@MainActivity.startActivity(myIntent)
+            val localId = prefs.getInt("local_id", -1)
+            val term    = spinnerTerminales.selectedItem?.toString()
+            if (localId != -1 && !term.isNullOrEmpty()) {
+                prefs.edit { putString("terminal", term) }
+                startActivity(Intent(this, DateLogActivity::class.java))
+                finish()
             } else {
-                Toast.makeText(this, "Debes seleccionar un local y terminal válidos", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Selecciona un local y terminal válidos", Toast.LENGTH_SHORT).show()
             }
-
-            //Inicializo la API del TPV con el codigo de licencia
-           /* RedCLSConfigurationLibrary.setAppLicense("057678260");
-
-            lifecycleScope.launch {
-               try {
-                   val response = withContext(Dispatchers.IO) {
-                       RedCLSMerchantConfigurationManager.loginWithoutUser(this@MainActivity)
-                   }
-
-                   Log.e("LoginDebug", "response.class = ${response::class.java.name}")
-                   Log.e("LoginDebug", "response.desc = ${response.desc}")
-
-                   if (response.code == 0) {
-                       // Login correcto
-                       //val merchantList = response.merchantList
-                       // Aquí puedes mostrar los comercios y terminales disponibles
-
-                       // Navegar a la siguiente actividad en el hilo principal
-                       val myIntent = Intent(this@MainActivity, DateLogActivity::class.java)
-                       startActivity(myIntent)
-                   } else {
-                       // Error en login, mostrar mensaje en UI
-                       val errorMsg = response.desc ?: "Error desconocido"
-                       Log.e("LoginDebug", "Error en login: $errorMsg")
-                       Toast.makeText(this@MainActivity, "Error en login: $errorMsg ${response.code}", Toast.LENGTH_LONG).show()
-                   }
-               } catch (e: Exception) {
-                   Log.e("LoginDebug", "Excepción: ${e.message}")
-                   Toast.makeText(this@MainActivity, "Excepción: ${e.message}", Toast.LENGTH_LONG).show()
-               }
-           }*/
         }
     }
 }
