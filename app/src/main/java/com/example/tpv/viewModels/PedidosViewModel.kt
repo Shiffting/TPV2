@@ -21,8 +21,23 @@ class PedidoViewModel : ViewModel() {
     private val _itemsPorMesa =
         MutableLiveData<MutableMap<String, MutableList<ItemPedido>>>(mutableMapOf())
     val itemsPorMesa: LiveData<MutableMap<String, MutableList<ItemPedido>>> = _itemsPorMesa
+    // Comensales por mesa (clave "Sala-Mesa")
+    private val _comensalesPorMesa = MutableLiveData<Map<String, Int>>(emptyMap())
+    val comensalesPorMesa: LiveData<Map<String, Int>> get() = _comensalesPorMesa
 
-    // PedidoViewModel.kt
+    private fun claveMesa(sala: String, mesa: String) = "$sala-$mesa"
+
+    fun getComensales(sala: String, mesa: String): Int {
+        return _comensalesPorMesa.value?.get(claveMesa(sala, mesa)) ?: 1
+    }
+
+    fun setComensales(sala: String, mesa: String, num: Int) {
+        val m = _comensalesPorMesa.value?.toMutableMap() ?: mutableMapOf()
+        m[claveMesa(sala, mesa)] = num
+        _comensalesPorMesa.value = m.toMap()
+    }
+
+
 
     fun añadirItem(item: ItemPedido) {
         val clave = claveSalaMesa() ?: return
@@ -144,11 +159,17 @@ class PedidoViewModel : ViewModel() {
 
                     val mapa = linkedMapOf<String, MutableList<ItemPedido>>()
                     val ids = mutableMapOf<String, String>()
+                    // (1) NUEVO: mapa de comensales
+                    val comensalesMap = mutableMapOf<String, Int>()
 
                     pedidos.forEach { linea ->
                         val clave = "${linea.NombreFormaPago}-${linea.PagoPendiente}"
                         ids[clave] = linea.reg
                         val lista = mapa.getOrPut(clave) { mutableListOf() }
+
+                        // (2) NUEVO: guardar comensales vistos para esa mesa (último valor gana)
+                        val com = linea.Comensales?.toIntOrNull() ?: 1
+                        comensalesMap[clave] = com
 
                         if (linea.PluAdbc == 90909090) {
                             // propiedad: la añado a la última base
@@ -177,7 +198,7 @@ class PedidoViewModel : ViewModel() {
                         }
                     }
 
-                    // **Aquí asignamos propsIntroducidas = número de props que cargó de BD**
+                    // props introducidas = las que vinieron de BD
                     mapa.values.forEach { listaItems ->
                         listaItems.forEach { item ->
                             item.introducidas = item.cantidad
@@ -187,6 +208,8 @@ class PedidoViewModel : ViewModel() {
 
                     _itemsPorMesa.value = mapa
                     _idPedidoPorMesa.value = ids
+                    // (3) NUEVO: publicar comensales en el LiveData inmutable
+                    _comensalesPorMesa.value = comensalesMap.toMap()
                 }
 
                 override fun onFailure(call: Call<List<Pedido>>, t: Throwable) {
@@ -194,7 +217,6 @@ class PedidoViewModel : ViewModel() {
                 }
             })
     }
-
 
     /** Inserta `nuevo` justo después de `base` dentro de la lista de items de esa mesa. */
     fun insertarItemDespues(base: ItemPedido, nuevo: ItemPedido) {

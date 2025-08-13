@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         val prefs = getSharedPreferences("TPV_PREFS", MODE_PRIVATE)
 
         // 0) Si ya tenemos todo, saltamos
-        val savedLocalId  = prefs.getInt("local_id", -1)
+        val savedLocalId = prefs.getInt("local_id", -1)
         val savedTerminal = prefs.getString("terminal", null)
         if (savedLocalId != -1 && !savedTerminal.isNullOrEmpty()) {
             startActivity(Intent(this, DateLogActivity::class.java))
@@ -34,15 +34,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         // Vistas
-        val idLocalEditText   = findViewById<EditText>(R.id.tokenInput)
+        val idLocalEditText = findViewById<EditText>(R.id.tokenInput)
         val spinnerTerminales = findViewById<Spinner>(R.id.idInput)
-        val spinnerDB         = findViewById<Spinner>(R.id.spinner2)
-        val textViewLocal     = findViewById<TextView>(R.id.textView2)
-        val button            = findViewById<Button>(R.id.button1)
+        val spinnerDB = findViewById<Spinner>(R.id.spinner2)
+        val textViewLocal = findViewById<TextView>(R.id.textView2)
+        val button = findViewById<Button>(R.id.button1)
 
         // --- 1) Spinner de DB ---
         val dbOptions = listOf("local", "cloud")
-        spinnerDB.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, dbOptions)
+        spinnerDB.adapter =
+            ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, dbOptions)
         // Selección previa
         prefs.getString("dbId", "cloud")?.let {
             val idx = dbOptions.indexOf(it)
@@ -60,7 +61,10 @@ class MainActivity : AppCompatActivity() {
                     remove("local_nombre")
                     remove("terminal")
                 }
-                Log.d("MainActivity", "DB cambiado a: $selectedDb -- reiniciando selecciones de local/terminal")
+                Log.d(
+                    "MainActivity",
+                    "DB cambiado a: $selectedDb -- reiniciando selecciones de local/terminal"
+                )
 
                 // Limpiamos UI de local/terminal
                 idLocalEditText.text.clear()
@@ -71,7 +75,8 @@ class MainActivity : AppCompatActivity() {
                 viewModel.cargarLocales(selectedDb)
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>) { /* no-op */ }
+            override fun onNothingSelected(parent: AdapterView<*>) { /* no-op */
+            }
         }
 
         // --- 2) Configurar ViewModel ---
@@ -82,19 +87,25 @@ class MainActivity : AppCompatActivity() {
         viewModel.localSeleccionado.observe(this) { local ->
             if (local != null) {
                 textViewLocal.text = local.nombre_local
+                Log.d("cobrar", local.Cobra + " Hola")
                 prefs.edit {
                     putInt("local_id", local.id_local)
                     putString("local_nombre", local.nombre_local)
+                    putString("cobrar_activado", local.Cobra)
                 }
             } else {
                 textViewLocal.text = "Local no encontrado"
+                prefs.edit {
+                    putString("cobrar_activado", "0")
+                }
             }
         }
 
         // --- 3) Spinner de terminales ---
         viewModel.terminales.observe(this) { terms ->
             val names = terms.map { it.nombre_terminal }
-            spinnerTerminales.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, names)
+            spinnerTerminales.adapter =
+                ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, names)
 
             // Si acabamos de cambiar DB y no hay terminal guardada, preseleccionamos la primera
             if (prefs.getString("terminal", null).isNullOrEmpty() && terms.isNotEmpty()) {
@@ -110,6 +121,7 @@ class MainActivity : AppCompatActivity() {
                     s.toString()
                 )
             }
+
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
@@ -117,13 +129,14 @@ class MainActivity : AppCompatActivity() {
         // --- 5) Botón Continuar ---
         button.setOnClickListener {
             val localId = prefs.getInt("local_id", -1)
-            val term    = spinnerTerminales.selectedItem?.toString()
+            val term = spinnerTerminales.selectedItem?.toString()
             if (localId != -1 && !term.isNullOrEmpty()) {
                 prefs.edit { putString("terminal", term) }
                 startActivity(Intent(this, DateLogActivity::class.java))
                 finish()
             } else {
-                Toast.makeText(this, "Selecciona un local y terminal válidos", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Selecciona un local y terminal válidos", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }

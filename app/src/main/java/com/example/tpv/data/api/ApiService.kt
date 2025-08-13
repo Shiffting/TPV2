@@ -86,5 +86,16 @@ interface ApiService {
         @Path("cantidad")  cantidad: Int
     ): Call<Void>
 
+    @DELETE("pedidos/pend/{reg}")
+    fun borrarPendientesPorReg(
+        @Header("X-Database-ID") dbId: String,
+        @Path("reg") reg: String
+    ): Call<Void>
+
+    @GET("pedidos/formasdepago/cobro")
+    fun getFormasPagoCobro(
+        @Header("X-Database-ID") dbId: String,
+        @Query("colorNet") colorNet: String
+    ): Call<List<String>>
 }
 

@@ -30,6 +30,7 @@ class LocalesViewModel : ViewModel() {
                 ) {
                     if (response.isSuccessful) {
                         _locales.value = response.body()
+                        Log.d("response", response.body().toString())
                     } else {
                         Log.e("LocalesVM", "Error en respuesta API: ${response.code()}")
                         Log.e("LOCALESVM", "empresa: $locales")

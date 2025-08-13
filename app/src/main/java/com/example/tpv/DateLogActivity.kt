@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.tpv.viewModels.EmpleadosViewModel
+import androidx.core.content.edit
 
 class DateLogActivity : AppCompatActivity() {
 
@@ -38,7 +39,10 @@ class DateLogActivity : AppCompatActivity() {
         empleadosViewModel = ViewModelProvider(this).get(EmpleadosViewModel::class.java)
 
         if (idLocal != -1) {
-            empleadosViewModel.cargarEmpleados(sharedPref.getString("dbId", "cloud").toString(), idLocal)
+            empleadosViewModel.cargarEmpleados(
+                sharedPref.getString("dbId", "cloud").toString(),
+                idLocal
+            )
         } else {
             Toast.makeText(this, "No se encontró el local $idLocal", Toast.LENGTH_SHORT).show()
         }
@@ -54,9 +58,8 @@ class DateLogActivity : AppCompatActivity() {
             val empleadoSeleccionado = spinner.selectedItem.toString()
             // Guardar en SharedPreferences
             val sharedPref = getSharedPreferences("TPV_PREFS", MODE_PRIVATE)
-            with(sharedPref.edit()) {
+            sharedPref.edit {
                 putString("empleado_nombre", empleadoSeleccionado)
-                apply()
             }
             println("Empleado seleccionado: $empleadoSeleccionado")
             val myIntent = Intent(this@DateLogActivity, TPVActivity::class.java)

@@ -21,36 +21,49 @@ class ProductosViewModel : ViewModel() {
 
     private val _salas = MutableLiveData<List<Sala>>()
     val salas: LiveData<List<Sala>> = _salas
+    data class MesaPpm(
+        val Nombre: String,
+        val FP: String,
+        val MesaReserva: String
+    )
 
-    fun cargarProductos(db:String, nombreLocal: String) {
-        RetrofitClient.apiService.getProductos(db, nombreLocal).enqueue(object : Callback<List<Producto>> {
-            override fun onResponse(call: Call<List<Producto>>, response: Response<List<Producto>>) {
-                if (response.isSuccessful) {
-                    _productos.value = response.body()
+    fun cargarProductos(db: String, nombreLocal: String) {
+        RetrofitClient.apiService.getProductos(db, nombreLocal)
+            .enqueue(object : Callback<List<Producto>> {
+                override fun onResponse(
+                    call: Call<List<Producto>>,
+                    response: Response<List<Producto>>
+                ) {
+                    if (response.isSuccessful) {
+                        _productos.value = response.body()
+                    }
                 }
-            }
 
-            override fun onFailure(call: Call<List<Producto>>, t: Throwable) {
-                Log.e("API", "Error al obtener productos", t)
-            }
-        })
+                override fun onFailure(call: Call<List<Producto>>, t: Throwable) {
+                    Log.e("API", "Error al obtener productos", t)
+                }
+            })
     }
 
-    fun cargarFamilias(db:String, nombreLocal: String) {
-        RetrofitClient.apiService.getFamiliasProducto(db, nombreLocal).enqueue(object : Callback<List<FamiliaProducto>> {
-            override fun onResponse(call: Call<List<FamiliaProducto>>, response: Response<List<FamiliaProducto>>) {
-                if (response.isSuccessful) {
-                    _familias.value = response.body()
+    fun cargarFamilias(db: String, nombreLocal: String) {
+        RetrofitClient.apiService.getFamiliasProducto(db, nombreLocal)
+            .enqueue(object : Callback<List<FamiliaProducto>> {
+                override fun onResponse(
+                    call: Call<List<FamiliaProducto>>,
+                    response: Response<List<FamiliaProducto>>
+                ) {
+                    if (response.isSuccessful) {
+                        _familias.value = response.body()
+                    }
                 }
-            }
 
-            override fun onFailure(call: Call<List<FamiliaProducto>>, t: Throwable) {
-                Log.e("API", "Error al obtener familias", t)
-            }
-        })
+                override fun onFailure(call: Call<List<FamiliaProducto>>, t: Throwable) {
+                    Log.e("API", "Error al obtener familias", t)
+                }
+            })
     }
 
-    fun cargarSalas(db:String, local:String) {
+    fun cargarSalas(db: String, local: String) {
         RetrofitClient.apiService.getSalas(db, local).enqueue(object : Callback<List<Sala>> {
             override fun onResponse(call: Call<List<Sala>>, response: Response<List<Sala>>) {
                 if (response.isSuccessful) {
@@ -65,27 +78,5 @@ class ProductosViewModel : ViewModel() {
                 Log.e("SALAS_VM", "Fallo en API", t)
             }
         })
-    }
-
-    fun obtenerTarifaPorPlu(plu: Int, tipoTarifa: Int): Double {
-        // Buscamos el producto en la lista cargada
-        val prod = productos.value?.find { it.Plu == plu }
-            ?: return 0.0
-
-        // Seleccionamos el campo String correspondiente
-        val tarifaStr = when (tipoTarifa) {
-            1  -> prod.Tarifa1
-            11 -> prod.Tarifa11
-            13 -> prod.Tarifa13
-            14 -> prod.Tarifa14
-            15 -> prod.Tarifa15
-            else -> prod.Tarifa1
-        }
-
-        // Normalizamos coma → punto y parseamos
-        return tarifaStr
-            .replace(",", ".")
-            .toDoubleOrNull()
-            ?: 0.0
     }
 }

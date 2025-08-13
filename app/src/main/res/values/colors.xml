@@ -9,4 +9,5 @@
     <color name="black_overlay">#66000000</color>
     <color name="occupied_table">#FF0000</color>
     <color name="free_table">#008000</color>
+    <color name="check_requested_table">#FF9800</color>
 </resources>

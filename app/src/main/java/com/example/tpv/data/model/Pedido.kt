@@ -27,5 +27,7 @@ data class Pedido(
     val incluirConfirmacion: Boolean = false,
     val Impreso: String,
     val Familia: String,
-    val PluAdbc: Int
+    val PluAdbc: Int,
+    val incluirCobro: Boolean = false,
+    val NombreFPagoOriginal: String? = null
 )

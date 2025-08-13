@@ -1,33 +1,33 @@
 package com.example.tpv
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.text.TextUtils
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.activityViewModels
-import androidx.gridlayout.widget.GridLayout
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.google.android.material.button.MaterialButton
-import com.example.tpv.data.model.Producto
-import com.example.tpv.data.api.RetrofitClient
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import android.util.Log
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.view.doOnLayout
+import androidx.core.widget.TextViewCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.gridlayout.widget.GridLayout
 import com.example.tpv.data.model.Sala
 import com.example.tpv.viewModels.PedidoViewModel
 import com.example.tpv.viewModels.ProductosViewModel
-
+import com.google.android.material.button.MaterialButton
 
 class SalasFragment : Fragment() {
+
     private var listener: MesaClickListener? = null
+
+    // Alturas mínimas homogéneas (puedes ajustar estos valores)
+    private val BTN_MIN_HEIGHT_DP_SALA = 56
+    private val BTN_MIN_HEIGHT_DP_MESA = 56
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -43,7 +43,6 @@ class SalasFragment : Fragment() {
         listener = null
     }
 
-
     private val pedidoViewModel: PedidoViewModel by activityViewModels()
     private val viewModel: ProductosViewModel by activityViewModels()
 
@@ -56,9 +55,7 @@ class SalasFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_salas, container, false)
-    }
+    ): View? = inflater.inflate(R.layout.fragment_salas, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -66,23 +63,28 @@ class SalasFragment : Fragment() {
         gridLayoutSalas = view.findViewById(R.id.gridLayoutSalas)
         gridLayoutMesas = view.findViewById(R.id.gridLayoutMesas)
 
-        val prefs = requireContext().getSharedPreferences("TPV_PREFS", Context.MODE_PRIVATE)
-        val local = prefs.getString("local_nombre", null).toString()
+        val prefs: SharedPreferences =
+            requireContext().getSharedPreferences("TPV_PREFS", Context.MODE_PRIVATE)
+        val local = prefs.getString("local_nombre", null).orEmpty()
+        val dbId  = prefs.getString("dbId", "cloud").orEmpty()
 
-        viewModel.cargarSalas(prefs.getString("dbId", "cloud").toString(), local)
+        viewModel.cargarSalas(dbId, local)
 
         viewModel.salas.observe(viewLifecycleOwner) { salas ->
-            if (salas.isEmpty()) {
-                Toast.makeText(requireContext(), "No hay salas disponibles", Toast.LENGTH_SHORT).show()
-            }
             gridLayoutSalas.removeAllViews()
             gridLayoutMesas.removeAllViews()
             salaButtons.clear()
             mesaButtons.clear()
 
+            if (salas.isEmpty()) {
+                Toast.makeText(requireContext(), "No hay salas disponibles", Toast.LENGTH_SHORT).show()
+                return@observe
+            }
+
             salas.forEach { sala ->
                 val salaButton = MaterialButton(requireContext()).apply {
                     text = sala.denominacion
+                    isAllCaps = false
                     isCheckable = true
                     layoutParams = GridLayout.LayoutParams().apply {
                         width = 0
@@ -90,6 +92,17 @@ class SalasFragment : Fragment() {
                         columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
                         setMargins(8, 8, 8, 8)
                     }
+
+                    // Autosize 100% en código: 1 línea preferida, 2 líneas como fallback
+                    applyAutoSizeOneLinePrefer(
+                        button = this,
+                        minSp = 9,   // tamaño mínimo
+                        maxSp = 18,  // tamaño máximo
+                        stepSp = 1,
+                        fallbackToTwoLines = true,
+                        minHeightPx = dpToPx(BTN_MIN_HEIGHT_DP_SALA)
+                    )
+
                     setOnClickListener {
                         selectExclusive(this, salaButtons)
                         pedidoViewModel.seleccionarSala(sala.denominacion)
@@ -101,14 +114,16 @@ class SalasFragment : Fragment() {
                 salaButtons.add(salaButton)
                 gridLayoutSalas.addView(salaButton)
             }
+
+            // Selección inicial opcional
+            salaButtons.firstOrNull()?.performClick()
         }
 
+        // Refresca ocupación al cambiar items
         pedidoViewModel.itemsPorMesa.observe(viewLifecycleOwner) {
             val salaSeleccionada = pedidoViewModel.salaSeleccionada.value ?: return@observe
-            val salaActual = viewModel.salas.value?.find { it.denominacion == salaSeleccionada }
-            if (salaActual != null) {
-                mostrarMesas(salaActual)
-            }
+            val salaActual = viewModel.salas.value?.find { it.denominacion == salaSeleccionada } ?: return@observe
+            mostrarMesas(salaActual)
         }
     }
 
@@ -117,16 +132,16 @@ class SalasFragment : Fragment() {
         mesaButtons.clear()
 
         val productosPorMesa = pedidoViewModel.itemsPorMesa.value ?: emptyMap()
+        val prefs = requireContext().getSharedPreferences("TPV_PREFS", Context.MODE_PRIVATE)
 
-        repeat(sala.numMesas) { index ->
-            val mesaNombre = "Mesa ${index + 1}"
-            val clave = "${sala.denominacion}-$mesaNombre"
-
-            // Verifica si hay productos asociados → mesa ocupada
+        sala.mesas.forEach { nombreMesa ->
+            val clave = "${sala.denominacion}-$nombreMesa"
             val mesaOcupada = productosPorMesa[clave]?.isNotEmpty() == true
+            val mesaImpresa = prefs.getBoolean("mesa_impresa_$clave", false)
 
             val mesaButton = MaterialButton(requireContext()).apply {
-                text = mesaNombre
+                text = nombreMesa
+                isAllCaps = false
                 isCheckable = true
                 layoutParams = GridLayout.LayoutParams().apply {
                     width = 0
@@ -134,16 +149,27 @@ class SalasFragment : Fragment() {
                     columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
                     setMargins(8, 8, 8, 8)
                 }
-
-                // Colores según ocupación
-                val colorRes = if (mesaOcupada) R.color.occupied_table else R.color.free_table
+                val colorRes = when {
+                    mesaImpresa -> R.color.check_requested_table   // naranja
+                    mesaOcupada -> R.color.occupied_table         // rojo
+                    else        -> R.color.free_table             // verde
+                }
                 backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, colorRes))
+
+                // Igual lógica para botones de mesa
+                applyAutoSizeOneLinePrefer(
+                    button = this,
+                    minSp = 10,
+                    maxSp = 18,
+                    stepSp = 1,
+                    fallbackToTwoLines = true,
+                    minHeightPx = dpToPx(BTN_MIN_HEIGHT_DP_MESA)
+                )
 
                 setOnClickListener {
                     selectExclusive(this, mesaButtons)
                     pedidoViewModel.seleccionarMesa(text.toString())
                     listener?.irAParrilla()
-                    println("Mesa seleccionada: ${text}")
                 }
             }
 
@@ -153,17 +179,63 @@ class SalasFragment : Fragment() {
     }
 
     private fun selectExclusive(selected: MaterialButton, buttons: List<MaterialButton>) {
-            for (btn in buttons) {
-                btn.isChecked = btn == selected
-            }
-        }
+        buttons.forEach { it.isChecked = (it == selected) }
+    }
 
-    private fun clearMesaSelection(mesaButtons: List<MaterialButton>) {
-        for (btn in mesaButtons) {
-            btn.isChecked = false
+    private fun clearMesaSelection(buttons: List<MaterialButton>) {
+        buttons.forEach { it.isChecked = false }
+    }
+
+    // ===== Helpers de autosize por CÓDIGO =====
+
+    private fun dpToPx(dp: Int): Int {
+        return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            dp.toFloat(),
+            resources.displayMetrics
+        ).toInt()
+    }
+    private fun applyAutoSizeOneLinePrefer(
+        button: MaterialButton,
+        minSp: Int,
+        maxSp: Int,
+        stepSp: Int,
+        fallbackToTwoLines: Boolean,
+        minHeightPx: Int
+    ) {
+        // Altura mínima homogénea directamente por código
+        button.minHeight = minHeightPx
+        button.minimumHeight = minHeightPx
+
+        // Preferir 1 línea
+        button.setSingleLine(true)
+        button.maxLines = 1
+        button.ellipsize = TextUtils.TruncateAt.END
+        button.includeFontPadding = false
+
+        // Auto-size uniforme por código
+        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
+            button, minSp, maxSp, stepSp, TypedValue.COMPLEX_UNIT_SP
+        )
+
+        // Revisión tras el layout: si a minSp sigue con elipsis, permite 2 líneas
+        if (fallbackToTwoLines) {
+            button.doOnLayout {
+                val layout = button.layout ?: return@doOnLayout
+                val hasEllipsisOnLine0 = layout.lineCount > 0 && layout.getEllipsisCount(0) > 0
+                if (hasEllipsisOnLine0) {
+                    button.setSingleLine(false)
+                    button.maxLines = 2
+                    button.ellipsize = TextUtils.TruncateAt.END
+                    TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
+                        button, minSp, maxSp, stepSp, TypedValue.COMPLEX_UNIT_SP
+                    )
+                }
+            }
         }
     }
 }
+
 interface MesaClickListener {
     fun irAParrilla()
 }
